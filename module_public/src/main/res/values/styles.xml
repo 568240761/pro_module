@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PubSplashStyle_Translucent_Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!--使用该主题的Activity，在Android8.0上如果指定了屏幕方向，会抛异常，导致程序崩溃，需要注意！！！-->
+    <style name="PubActivityStyle_Translucent_Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="PubPermissionStyle_Translucent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="PubDialogStyle_Scale_Alpha" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pub_dialog_scale_alpha_in</item>
+        <item name="android:windowExitAnimation">@anim/pub_dialog_scale_alpha_out</item>
+    </style>
+
+    <style name="PubDialogStyle_Bottom" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pub_dialog_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/pub_dialog_bottom_out</item>
+    </style>
+</resources>

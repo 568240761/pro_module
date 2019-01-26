@@ -1,13 +1,12 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
+
     compileSdkVersion COMPILE_SDK_VERSION as int
+
     defaultConfig {
-        applicationId "com.ly.test"
         minSdkVersion MIN_SDK_VERSION as int
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
@@ -25,12 +24,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "androidx.recyclerview:recyclerview:$ANDROID_X_RECYCLER_VIEW"
     implementation "androidx.appcompat:appcompat:$ANDROID_X_APPCOMPAT"
+    implementation "androidx.fragment:fragment:$ANDROID_X_FRAGMENT"
+    implementation "com.google.code.gson:gson:$GSON_VERSION"
     implementation "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
-
+    implementation "androidx.lifecycle:lifecycle-process:$ANDROID_X_LIFECYCLE"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$ANDROID_X_LIFECYCLE"
+    implementation "androidx.multidex:multidex:$ANDROID_X_MULTIDEX"
 }

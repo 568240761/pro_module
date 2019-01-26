@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.ly.pub">
+    <!-- 写权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 读权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--适配8.0以上更新应用时跳转到安装页面的权限-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <application>
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.FileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <!-- 元数据 -->
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/pub_path" />
+        </provider>
+    </application>
+</manifest>
