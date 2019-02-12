@@ -18,5 +18,10 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/pub_path" />
         </provider>
+        <activity
+                android:name="com.ly.pub.util.PermissionActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:theme="@style/PubPermissionStyle_Translucent"
+                android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 </manifest>

@@ -1,1 +1,1 @@
-include ':app', ':module_public'
+include ':app', ':module_public', ':module_image', ':module_network', ':module_widget'
