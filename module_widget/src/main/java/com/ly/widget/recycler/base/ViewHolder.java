@@ -28,7 +28,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private ImageView mImageView;
     private String mImageUrl;
     private PubImageLoader mImageLoader;
-
+    private int mPlaceholder = R.drawable.pub_image_placeholder;
     /**
      * 是否完成加载图片
      */
@@ -59,12 +59,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return holder;
     }
 
-    /**
-     * 通过viewId获取控件
-     *
-     * @param viewId
-     * @return
-     */
+
     public <T extends View> T getView(int viewId) {
         View view = mViews.get(viewId);
         if (view == null) {
@@ -86,6 +81,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     public ViewHolder initImageData(int viewId, String url, @DrawableRes int placeholder) {
+        mPlaceholder = placeholder;
         mImageView = getView(viewId);
         mImageUrl = url;
         mIsLoadCompleted = false;
@@ -94,6 +90,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         } else {
             mImageView.setImageResource(placeholder);
         }
+
         return this;
     }
 
@@ -101,7 +98,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         if (mImageView == null || TextUtils.isEmpty(mImageUrl) || mIsLoadCompleted) {
             return this;
         }
-        mImageLoader.showImage(mImageView.getContext(), mImageView, mImageUrl);
+        mImageLoader.showImage(mImageView.getContext(), mImageView, mImageUrl, mPlaceholder, mPlaceholder);
         mIsLoadCompleted = true;
         return this;
     }
@@ -179,6 +176,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         return this;
     }
+
     /**
      * 为文本设置超链接
      */
@@ -248,20 +246,21 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     *整个Item点击监听
+     * 整个Item点击监听
      */
-    public ViewHolder setItemOnClickListener(View.OnClickListener listener){
+    public ViewHolder setItemOnClickListener(View.OnClickListener listener) {
         mConvertView.setOnClickListener(listener);
         return this;
     }
 
     /**
-     *整个Item长按监听
+     * 整个Item长按监听
      */
-    public ViewHolder setItemOnLongClickListener(View.OnLongClickListener listener){
+    public ViewHolder setItemOnLongClickListener(View.OnLongClickListener listener) {
         mConvertView.setOnLongClickListener(listener);
         return this;
     }
+
     /**
      * 点击监听
      */

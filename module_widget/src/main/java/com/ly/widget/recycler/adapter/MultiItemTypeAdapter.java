@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.ly.pub.PubImageLoader;
+import com.ly.pub.util.LogUtilsKt;
 import com.ly.widget.recycler.base.ItemViewDelegate;
 import com.ly.widget.recycler.base.ItemViewDelegateManager;
 import com.ly.widget.recycler.base.ViewHolder;
@@ -16,14 +17,14 @@ import java.util.List;
  * Created by zhy on 16/4/9.
  */
 public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
+
     protected Context mContext;
     protected List<T> mDatas;
-
     protected ItemViewDelegateManager mItemViewDelegateManager;
     protected RecyclerView mRecyclerView;
     protected PubImageLoader mImageLoader;
 
-    public MultiItemTypeAdapter(Context context, List<T> datas,PubImageLoader imageLoader) {
+    public MultiItemTypeAdapter(Context context, List<T> datas, PubImageLoader imageLoader) {
         mContext = context;
         mDatas = datas;
         mImageLoader = imageLoader;
@@ -41,7 +42,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewDelegate itemViewDelegate = mItemViewDelegateManager.getItemViewDelegate(viewType);
         int layoutId = itemViewDelegate.getItemViewLayoutId();
-        ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId,mRecyclerView,mImageLoader);
+        ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId, mRecyclerView, mImageLoader);
         return holder;
     }
 

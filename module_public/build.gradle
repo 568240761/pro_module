@@ -29,10 +29,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$ANDROID_X_APPCOMPAT"
-    implementation "com.google.code.gson:gson:$GSON_VERSION"
-    implementation "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "androidx.appcompat:appcompat:$ANDROID_X_APPCOMPAT"
+    api "com.google.code.gson:gson:$GSON_VERSION"
+    api "com.google.android.material:material:$MATERIAL"
+    api "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
     implementation "androidx.lifecycle:lifecycle-process:$ANDROID_X_LIFECYCLE"
     implementation "androidx.lifecycle:lifecycle-common-java8:$ANDROID_X_LIFECYCLE"
     implementation "androidx.multidex:multidex:$ANDROID_X_MULTIDEX"

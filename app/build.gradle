@@ -7,8 +7,8 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     defaultConfig {
-        applicationId "com.ly.test"
-        minSdkVersion MIN_SDK_VERSION as int
+        applicationId "com.ly.app.video"
+        minSdkVersion 21
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
@@ -29,8 +29,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$ANDROID_X_APPCOMPAT"
-    implementation "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
-
+    implementation project(':module_public')
+    implementation project(':module_widget')
+    implementation project(':module_image')
 }

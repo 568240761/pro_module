@@ -28,8 +28,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':module_public')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:$ANDROID_X_APPCOMPAT"
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT"
     implementation "com.squareup.okhttp3:okhttp:$OKHTTP"
     implementation "com.squareup.okhttp3:logging-interceptor:$OKHTTP"
