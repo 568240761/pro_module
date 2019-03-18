@@ -1,6 +1,7 @@
 package com.ly.video
 
 import android.net.Uri
+import android.view.SurfaceHolder
 
 /**
  * Created by LanYang on 2019/2/27
@@ -8,13 +9,7 @@ import android.net.Uri
  */
 interface IVideoPlayer {
 
-    /**
-     * 初始化
-     */
-    fun init()
-
-    /**释放资源*/
-    fun release()
+    fun bindSurfaceHolder(holder: SurfaceHolder?)
 
     /**
      * 设置视频URI
@@ -31,6 +26,12 @@ interface IVideoPlayer {
 
     /**暂停*/
     fun pause()
+
+    /**开启后台播放*/
+    fun canBackground()
+
+    /**关闭后台播放*/
+    fun stopBackground()
 
     /**
      * 获取视频时长

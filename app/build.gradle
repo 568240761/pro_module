@@ -8,7 +8,7 @@ android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     defaultConfig {
         applicationId "com.ly.app.video"
-        minSdkVersion 21
+        minSdkVersion MIN_SDK_VERSION as int
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
@@ -19,8 +19,19 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    //签名配置
+    signingConfigs {
+        config {
+            keyAlias 'qq'
+            keyPassword 'qq568240761'
+            storeFile file('D:\\ly.jks')
+            storePassword 'qq568240761'
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -32,4 +43,5 @@ dependencies {
     implementation project(':module_public')
     implementation project(':module_widget')
     implementation project(':module_image')
+    implementation project(':module_video')
 }

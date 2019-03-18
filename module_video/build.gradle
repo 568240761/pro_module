@@ -11,6 +11,7 @@ android {
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
     }
 
     compileOptions {
@@ -35,7 +36,7 @@ dependencies {
     implementation "tv.danmaku.ijk.media:ijkplayer-java:$ijk_version"
     implementation "tv.danmaku.ijk.media:ijkplayer-armv7a:$ijk_version"
     implementation "tv.danmaku.ijk.media:ijkplayer-armv5:$ijk_version"
-    implementation "tv.danmaku.ijk.media:ijkplayer-arm64:$ijk_version"
+//    implementation "tv.danmaku.ijk.media:ijkplayer-arm64:$ijk_version"
     implementation "tv.danmaku.ijk.media:ijkplayer-x86:$ijk_version"
-    implementation "tv.danmaku.ijk.media:ijkplayer-x86_64:$ijk_version"
+//    implementation "tv.danmaku.ijk.media:ijkplayer-x86_64:$ijk_version"
 }

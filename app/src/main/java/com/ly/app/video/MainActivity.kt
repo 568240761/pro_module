@@ -10,6 +10,7 @@ import com.ly.pub.PUBLIC_IMAGE_LOADER
 import com.ly.pub.PubActivity
 import com.ly.pub.util.PermissionCallback
 import com.ly.pub.util.checkPermission
+import com.ly.pub.util.jumpNewPage
 import com.ly.pub.util.showToast
 import com.ly.widget.recycler.adapter.CommonAdapter
 import com.ly.widget.recycler.base.ViewHolder
@@ -23,7 +24,12 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
     private val mAdapter: CommonAdapter<VideoEntity>
         get() = object : CommonAdapter<VideoEntity>(this, R.layout.recycler_item_video, PUBLIC_IMAGE_LOADER, mList) {
             override fun convert(holder: ViewHolder?, t: VideoEntity?, position: Int) {
-                holder?.initImageData(R.id.video_image, t!!.thumbPath,R.drawable.shape_recycler_item_video_bg)
+                holder!!.initImageData(R.id.video_image, t!!.thumbPath,R.drawable.shape_recycler_item_video_bg)
+                holder.setItemOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString(BUNDLE_VIDEO_PATH,t.path)
+                    jumpNewPage(this@MainActivity,VideoActivity::class.java,bundle)
+                }
             }
         }
 
