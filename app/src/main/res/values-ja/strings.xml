@@ -2,4 +2,14 @@
 <resources>
     <!--日语-->
     <string name="app_name">白い雲</string>
+
+    <string name="menu_movie">映画</string>
+
+    <string name="menu_search">検索する</string>
+
+    <string name="menu_download">ダウンロードする</string>
+
+    <string name="menu_setting">設定</string>
+
+    <string name="hint_advertising">advertising</string>
 </resources>

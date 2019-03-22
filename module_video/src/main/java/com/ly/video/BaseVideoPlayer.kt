@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
-import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_e
 import tv.danmaku.ijk.media.player.AbstractMediaPlayer
@@ -43,8 +42,6 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
 
     private val mMediaPlayer: IMediaPlayer = IjkMediaPlayer()
 
-    private val mAudioManager = PUBLIC_APPLICATION.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
     constructor(context: Context) : super(context) {
         this.init()
     }
@@ -75,20 +72,13 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
 
         IjkMediaPlayer.native_profileBegin("libijkplayer.so")
         if (mMediaPlayer is IjkMediaPlayer) {
-            //硬解码
+            /*硬解码*/
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 1)
-//            mMediaPlayer.setOption(
-//                IjkMediaPlayer.OPT_CATEGORY_PLAYER,
-//                "overlay-format",
-//                IjkMediaPlayer.SDL_FCC_RV32.toLong()
-//            )
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1);
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48)
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1)
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
+
+            //调用seekTo时,使用关键帧
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
         }
 
         mRenderView = SurfaceRenderView(context)
@@ -104,7 +94,6 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
 
         LogUtil_d(this.javaClass.simpleName, "Uri=$uri Header=${headers?.toString()}")
 
-        mAudioManager.requestAudioFocus(null,AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         try {
             mMediaPlayer.setDataSource(context, uri, headers)
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
@@ -175,7 +164,6 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
         mMediaPlayer.stop()
         mMediaPlayer.release()
         mCurrentState = STATE_IDLE
-        mAudioManager.abandonAudioFocus(null)
         IjkMediaPlayer.native_profileEnd()
     }
 

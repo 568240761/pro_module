@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_recycler_decoration_line_color">#999999</color>
+    <color name="widget_recycler_decoration_line_color">#88AAAAAA</color>
 </resources>

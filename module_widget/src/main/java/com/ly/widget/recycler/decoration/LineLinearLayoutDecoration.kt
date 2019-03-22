@@ -13,18 +13,20 @@ import com.ly.widget.R
  * 当RecyclerView的LayoutManager为LinearLayoutManager，Item之间需要画线时，可以使用该类
  */
 class LineLinearLayoutDecoration(
-        /**L距离左边的间隔*/
-        val leftMargin: Float = 0f,
-        /**L距离右边的间隔*/
-        val rightMargin: Float = 0f,
-        /**是否绘制最后一个item的Line,默认为false;*/
-        val isDrawBottomLine: Boolean = false,
-        /**Line的颜色*/
-        @ColorRes val color: Int = R.color.widget_recycler_decoration_line_color
+    /**线的高度*/
+    val lineHeight: Float = 1f,
+    /**Line距离左边的间隔*/
+    val leftMargin: Float = 0f,
+    /**Line距离右边的间隔*/
+    val rightMargin: Float = 0f,
+    /**是否绘制最后一个item的Line,默认为false;*/
+    val isDrawBottomLine: Boolean = false,
+    /**Line的颜色*/
+    @ColorRes val color: Int = R.color.widget_recycler_decoration_line_color
 ) : RecyclerView.ItemDecoration() {
     private var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private lateinit var context: Context
-    private val height = 1
+    private val height = retDip2px(lineHeight)
 
     init {
         paint.style = Paint.Style.FILL

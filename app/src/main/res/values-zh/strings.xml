@@ -2,4 +2,14 @@
 <resources>
     <!--非大陆地区 繁体字-->
     <string name="app_name">白雲</string>
+
+    <string name="menu_movie">電影</string>
+
+    <string name="menu_search">搜索</string>
+
+    <string name="menu_download">下載</string>
+
+    <string name="menu_setting">設置</string>
+
+    <string name="hint_advertising">advertising</string>
 </resources>

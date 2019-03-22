@@ -1,4 +1,14 @@
 <resources>
     <!--英语-->
     <string name="app_name">WhiteClouds</string>
+
+    <string name="menu_movie">Movie</string>
+
+    <string name="menu_search">Search</string>
+
+    <string name="menu_download">Download</string>
+
+    <string name="menu_setting">Setting</string>
+
+    <string name="hint_advertising">advertising</string>
 </resources>

@@ -15,7 +15,7 @@ abstract class PubFragment : Fragment(), Receiver {
     /**是否为第一次可见*/
     var isFirstVisible = true
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as PubActivity
         registerReceivers(this)
