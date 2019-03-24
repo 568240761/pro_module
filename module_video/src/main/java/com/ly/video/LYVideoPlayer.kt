@@ -44,7 +44,7 @@ class LYVideoPlayer : BaseVideoPlayer {
     var title: TextView? = null
 
     /**更多功能*/
-    var moreFunc: TextView? = null
+    var moreFunc: ImageView? = null
 
     /**播放状态*/
     var playStatus: ImageView? = null
