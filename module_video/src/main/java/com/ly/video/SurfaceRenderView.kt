@@ -96,7 +96,6 @@ class SurfaceViewCallback : SurfaceHolder.Callback {
             this@SurfaceViewCallback.javaClass.simpleName,
             "surfaceChanged[format=$format;width=$width;height=$height]"
         )
-        mPlayer?.start()
     }
 
 

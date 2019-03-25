@@ -1,12 +1,13 @@
 package com.ly.app.video
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import com.ly.pub.PubActivity
 import com.ly.pub.util.LogUtil_d
 import kotlinx.android.synthetic.main.activity_video.*
 
-const val BUNDLE_VIDEO_PATH = "video_path"
+const val BUNDLE_VIDEO_ENTITY = "video_entity"
 
 class VideoActivity : PubActivity() {
 
@@ -21,10 +22,10 @@ class VideoActivity : PubActivity() {
             clickBack()
         }
 
-        val path = intent.getStringExtra(BUNDLE_VIDEO_PATH)
-        if (path != null) {
-            LogUtil_d(this.javaClass.simpleName, "应用内跳转过来path=$path")
-            val uri = Uri.parse(path)
+        val source = intent.getParcelableExtra<SourceEntity>(BUNDLE_VIDEO_ENTITY)
+        if (source != null) {
+            initData(source)
+            val uri = Uri.parse(source.path)
             LogUtil_d(this.javaClass.simpleName, "应用内跳转过来uri=$uri")
             player.setVideoURI(uri, isDebug = BuildConfig.DEBUG)
         } else {
@@ -34,5 +35,12 @@ class VideoActivity : PubActivity() {
                 player.setVideoURI(uri, isDebug = BuildConfig.DEBUG)
             }
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initData(source: SourceEntity) {
+        player.title?.text = source.getVideoName()
+        player.duration?.text = source.getVideoDuration()
+        player.current?.text = "0:00"
     }
 }

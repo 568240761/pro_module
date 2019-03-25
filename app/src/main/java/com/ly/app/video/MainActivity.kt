@@ -45,7 +45,7 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
 
                 holder.setItemOnClickListener {
                     val bundle = Bundle()
-                    bundle.putString(BUNDLE_VIDEO_PATH, t.path)
+                    bundle.putParcelable(BUNDLE_VIDEO_ENTITY,t)
                     jumpNewPage(this@MainActivity, VideoActivity::class.java, bundle)
                 }
             }

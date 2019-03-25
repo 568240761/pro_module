@@ -4,12 +4,14 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
+import android.os.Message
 import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_e
+import com.ly.pub.util.LogUtil_i
 import tv.danmaku.ijk.media.player.AbstractMediaPlayer
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
@@ -18,7 +20,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
  * Created by LanYang on 2019/2/27
  * 视频播放器;使用该类需要实现带UI控制界面[LYVideoPlayer]
  */
-open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
+open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
 
     private val STATE_ERROR = -1
     private val STATE_IDLE = 0
@@ -27,6 +29,8 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     private val STATE_PLAYING = 3
     private val STATE_PAUSED = 4
     private val STATE_PLAYBACK_COMPLETED = 5
+
+    private val MSG_TIME_WHAT = 1
 
     private var mCurrentState = STATE_IDLE
 
@@ -38,9 +42,11 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     private var mVideoWidth: Int = 0
     private var mVideoHeight: Int = 0
 
-    private var mRenderView: IRenderView? = null
+    private lateinit var mRenderView: IRenderView
 
-    private val mMediaPlayer: IMediaPlayer = IjkMediaPlayer()
+    private lateinit var mTimeHandler: VideoHandler
+
+    protected val mMediaPlayer: IMediaPlayer = IjkMediaPlayer()
 
     constructor(context: Context) : super(context) {
         this.init()
@@ -65,6 +71,8 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     private fun init() {
+        mTimeHandler = VideoHandler(this)
+
         setOnPreparedListener()
         setOnCompletionListener()
         setOnVideoSizeChangedListener()
@@ -79,10 +87,13 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
 
             //调用seekTo时,使用关键帧
             mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
+
+            //1-视频缓冲完成后,就开始播放；0-视频缓冲完成后,先暂停
+            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0)
         }
 
         mRenderView = SurfaceRenderView(context)
-        addView(mRenderView!!.getView())
+        addView(mRenderView.getView())
     }
 
     override fun bindSurfaceHolder(holder: SurfaceHolder?) {
@@ -109,6 +120,7 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     override fun start() {
         if (isPreparedState()) {
             mMediaPlayer.start()
+            mTimeHandler.sendEmptyMessageDelayed(MSG_TIME_WHAT, 1000)
             mCurrentState = STATE_PLAYING
         }
     }
@@ -116,8 +128,9 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     override fun pause() {
         if (isPreparedState()) {
             if (mMediaPlayer.isPlaying) {
-                mMediaPlayer.pause();
-                mCurrentState = STATE_PAUSED;
+                mMediaPlayer.pause()
+                mTimeHandler.removeMessages(MSG_TIME_WHAT)
+                mCurrentState = STATE_PAUSED
             }
         }
     }
@@ -158,9 +171,19 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     override fun captureFrames() {
     }
 
+    override fun handleMessage(msg: Message?) {
+        when (msg?.what) {
+            MSG_TIME_WHAT -> {
+                if (mMediaPlayer.currentPosition < mMediaPlayer.duration) {
+
+                }
+            }
+        }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        LogUtil_d(this.javaClass.simpleName,"onDetachedFromWindow")
+        LogUtil_d(this.javaClass.simpleName, "onDetachedFromWindow")
         mMediaPlayer.stop()
         mMediaPlayer.release()
         mCurrentState = STATE_IDLE
@@ -168,6 +191,11 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     fun setOnPreparedListener(listener: IMediaPlayer.OnPreparedListener? = null) {
+        LogUtil_d(
+            this@BaseVideoPlayer.javaClass.simpleName,
+            "setOnPreparedListener:[listener${if (listener != null) "!= null" else "= null"}]"
+        )
+
         mOnPreparedListener = IMediaPlayer.OnPreparedListener {
             LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "IMediaPlayer.OnPreparedListener")
             mCurrentState = STATE_PREPARED
@@ -178,9 +206,9 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
             LogUtil_d(this.javaClass.simpleName, "mVideoHeight=$mVideoHeight")
 
             if (mVideoWidth > 0 && mVideoHeight > 0) {
-                mRenderView?.setVideoSize(mVideoWidth, mVideoHeight)
-                mRenderView?.resetLayout()
-                mRenderView?.bindMediaPlayer(this@BaseVideoPlayer)
+                mRenderView.setVideoSize(mVideoWidth, mVideoHeight)
+                mRenderView.resetLayout()
+                mRenderView.bindMediaPlayer(this@BaseVideoPlayer)
             }
 
             listener?.onPrepared(it)
@@ -189,6 +217,7 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     fun setOnCompletionListener(listener: IMediaPlayer.OnCompletionListener? = null) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnCompletionListener")
         mOnCompletionListener = IMediaPlayer.OnCompletionListener { mp: IMediaPlayer ->
             LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "OnCompletionListener")
             mCurrentState = STATE_PLAYBACK_COMPLETED
@@ -198,14 +227,17 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     fun setOnBufferingUpdateListener(listener: IMediaPlayer.OnBufferingUpdateListener) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnBufferingUpdateListener")
         mMediaPlayer.setOnBufferingUpdateListener(listener)
     }
 
     fun setOnSeekCompleteListener(listener: IMediaPlayer.OnSeekCompleteListener) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnSeekCompleteListener")
         mMediaPlayer.setOnSeekCompleteListener(listener)
     }
 
     fun setOnVideoSizeChangedListener(listener: IMediaPlayer.OnVideoSizeChangedListener? = null) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnVideoSizeChangedListener")
         mVideoSizeChangedListener =
             IMediaPlayer.OnVideoSizeChangedListener { mp: IMediaPlayer, width: Int, height: Int, sarNum: Int, sarDen: Int ->
                 LogUtil_d(
@@ -214,8 +246,8 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
                 )
 
                 if (width != 0 && height != 0) {
-                    mRenderView?.setVideoSize(width, height)
-                    mRenderView?.resetLayout()
+                    mRenderView.setVideoSize(width, height)
+                    mRenderView.resetLayout()
                 }
                 listener?.onVideoSizeChanged(mp, width, height, sarNum, sarDen)
             }
@@ -223,6 +255,7 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     fun setOnErrorListener(listener: IMediaPlayer.OnErrorListener? = null) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnErrorListener")
         mOnErrorListener = IMediaPlayer.OnErrorListener { mp: IMediaPlayer, what: Int, extra: Int ->
             LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "OnErrorListener[what=$what,extra=$extra]")
 
@@ -234,21 +267,25 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer {
     }
 
     fun setOnInfoListener(listener: IMediaPlayer.OnInfoListener) {
+        LogUtil_i(this@BaseVideoPlayer.javaClass.simpleName, "setOnInfoListener")
         mMediaPlayer.setOnInfoListener(listener)
     }
 
     fun setOnTimedTextListener(listener: IMediaPlayer.OnTimedTextListener) {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnTimedTextListener")
         mMediaPlayer.setOnTimedTextListener(listener)
     }
 
     fun clearListeners() {
+        LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "clearListeners")
         mOnErrorListener = null
         mOnCompletionListener = null
         mOnPreparedListener = null
+        mVideoSizeChangedListener = null
         if (mMediaPlayer is AbstractMediaPlayer) mMediaPlayer.resetListeners()
     }
 
-    private fun isPreparedState(): Boolean {
+    protected fun isPreparedState(): Boolean {
         return mCurrentState != STATE_ERROR &&
                 mCurrentState != STATE_IDLE &&
                 mCurrentState != STATE_PREPARING
