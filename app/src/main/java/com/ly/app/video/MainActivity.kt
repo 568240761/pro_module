@@ -13,6 +13,7 @@ import com.ly.pub.util.PermissionCallback
 import com.ly.pub.util.checkPermission
 import com.ly.pub.util.jumpNewPage
 import com.ly.pub.util.showToast
+import com.ly.video.millisecondToHMS
 import com.ly.widget.recycler.adapter.CommonAdapter
 import com.ly.widget.recycler.base.ViewHolder
 import com.ly.widget.recycler.decoration.LineLinearLayoutDecoration
@@ -28,11 +29,11 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
 
                 holder!!.initImageData(R.id.video_image, t!!.thumbPath, R.drawable.shape_solid_22000000)
 
-                if(t.duration>0){
-                    holder.setVisible(R.id.video_duration,true)
-                    holder.setText(R.id.video_duration,t.getVideoDuration())
-                }else{
-                    holder.setVisible(R.id.video_duration,false)
+                if (t.duration > 0) {
+                    holder.setVisible(R.id.video_duration, true)
+                    holder.setText(R.id.video_duration, millisecondToHMS(t.duration))
+                } else {
+                    holder.setVisible(R.id.video_duration, false)
                 }
 
                 holder.setText(R.id.video_name, t.getVideoName())
@@ -45,7 +46,7 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
 
                 holder.setItemOnClickListener {
                     val bundle = Bundle()
-                    bundle.putParcelable(BUNDLE_VIDEO_ENTITY,t)
+                    bundle.putParcelable(BUNDLE_VIDEO_ENTITY, t)
                     jumpNewPage(this@MainActivity, VideoActivity::class.java, bundle)
                 }
             }
@@ -61,20 +62,20 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
         recycler.adapter = mAdapter
 
         checkPermission(
-            this,
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            object : PermissionCallback() {
-                override fun onDenied(result: Int) {
-                    super.onDenied(result)
-                    showToast("未授予读写权限")
-                    clickBack()
-                }
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                object : PermissionCallback() {
+                    override fun onDenied(result: Int) {
+                        super.onDenied(result)
+                        showToast("未授予读写权限")
+                        clickBack()
+                    }
 
-                override fun onGranted() {
-                    super.onGranted()
-                    LoaderManager.getInstance(this@MainActivity).initLoader(0, null, mLoader)
-                }
-            })
+                    override fun onGranted() {
+                        super.onGranted()
+                        LoaderManager.getInstance(this@MainActivity).initLoader(0, null, mLoader)
+                    }
+                })
 
         bottom_bar.replaceMenu(R.menu.menu_bottom_bar)
     }

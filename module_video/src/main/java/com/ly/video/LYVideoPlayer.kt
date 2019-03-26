@@ -32,34 +32,34 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
-        context,
-        attrs,
-        defStyleAttr,
-        defStyleRes
+            context,
+            attrs,
+            defStyleAttr,
+            defStyleRes
     ) {
         loadView()
     }
 
     /**返回按钮*/
-    var goBack: ImageView? = null
+    lateinit var goBack: ImageView
 
     /**标题*/
-    var title: TextView? = null
+    lateinit var title: TextView
 
     /**更多功能*/
-    var moreFunc: ImageView? = null
+    lateinit var moreFunc: ImageView
 
     /**播放状态*/
-    var playStatus: ImageView? = null
+    lateinit var playStatus: ImageView
 
     /**可拖动进度条*/
-    var seekbar: SeekBar? = null
+    lateinit var seekbar: SeekBar
 
     /**视频已播放时长*/
-    var current: TextView? = null
+    lateinit var current: TextView
 
     /**视频总时长*/
-    var duration: TextView? = null
+    lateinit var duration: TextView
 
     private fun loadView() {
         LayoutInflater.from(context).inflate(R.layout.video_layout_player, this, true)
@@ -71,9 +71,9 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
         current = video_current
         duration = video_duration
 
-        playStatus?.setOnClickListener(this)
+        playStatus.setOnClickListener(this)
 
-        setOnPreparedListener(IMediaPlayer.OnPreparedListener { playStatus?.visibility = View.VISIBLE })
+        setOnPreparedListener(IMediaPlayer.OnPreparedListener { playStatus.visibility = View.VISIBLE })
 
         setOnBufferingUpdateListener(IMediaPlayer.OnBufferingUpdateListener { _, percent: Int ->
             LogUtil_i(this@LYVideoPlayer.javaClass.simpleName, "percent=$percent")
@@ -83,11 +83,11 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
             LogUtil_i(this@LYVideoPlayer.javaClass.simpleName, "text=${ijkTimedText.text}")
         })
 
-        setOnSeekCompleteListener(IMediaPlayer.OnSeekCompleteListener{
+        setOnSeekCompleteListener(IMediaPlayer.OnSeekCompleteListener {
             LogUtil_i(this@LYVideoPlayer.javaClass.simpleName, "seek完成！")
         })
 
-        setOnInfoListener(IMediaPlayer.OnInfoListener{ iMediaPlayer: IMediaPlayer, what: Int, extra: Int ->
+        setOnInfoListener(IMediaPlayer.OnInfoListener { iMediaPlayer: IMediaPlayer, what: Int, extra: Int ->
             LogUtil_i(this@LYVideoPlayer.javaClass.simpleName, "what=$what extra=$extra")
             false
         })
@@ -99,13 +99,18 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
                 if (isPreparedState()) {
                     if (mMediaPlayer.isPlaying) {
                         pause()
-                        playStatus?.setImageResource(R.drawable.video_start)
+                        playStatus.setImageResource(R.drawable.video_start)
                     } else {
                         start()
-                        playStatus?.setImageResource(R.drawable.video_pause)
+                        playStatus.setImageResource(R.drawable.video_pause)
                     }
                 }
             }
         }
+    }
+
+    override fun changeCurrentPosition(currentPosition: Long, duration: Long) {
+        current.text = millisecondToHMS(currentPosition)
+        seekbar.progress = (currentPosition.toFloat() / duration * 100).toInt()
     }
 }

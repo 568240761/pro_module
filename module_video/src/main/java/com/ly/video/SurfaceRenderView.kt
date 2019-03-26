@@ -21,32 +21,32 @@ class SurfaceRenderView : SurfaceView, IRenderView {
     private val mSurfaceViewCallback = SurfaceViewCallback()
 
     constructor(context: Context?) : super(context) {
-        initView(context)
+        initView()
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context)
+        initView()
     }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initView(context)
+        initView()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
-        context,
-        attrs,
-        defStyleAttr,
-        defStyleRes
+            context,
+            attrs,
+            defStyleAttr,
+            defStyleRes
     ) {
-        initView(context)
+        initView()
     }
 
-    private fun initView(context: Context?) {
+    private fun initView() {
         val lp = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            Gravity.CENTER
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER
         )
         layoutParams = lp
 
@@ -93,8 +93,8 @@ class SurfaceViewCallback : SurfaceHolder.Callback {
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
         LogUtil_d(
-            this@SurfaceViewCallback.javaClass.simpleName,
-            "surfaceChanged[format=$format;width=$width;height=$height]"
+                this@SurfaceViewCallback.javaClass.simpleName,
+                "surfaceChanged[format=$format;width=$width;height=$height]"
         )
     }
 

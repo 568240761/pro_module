@@ -1,5 +1,6 @@
 package com.ly.video
 
+import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
@@ -20,7 +21,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
  * Created by LanYang on 2019/2/27
  * 视频播放器;使用该类需要实现带UI控制界面[LYVideoPlayer]
  */
-open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
+abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
 
     private val STATE_ERROR = -1
     private val STATE_IDLE = 0
@@ -62,10 +63,10 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
-        context,
-        attrs,
-        defStyleAttr,
-        defStyleRes
+            context,
+            attrs,
+            defStyleAttr,
+            defStyleRes
     ) {
         this.init()
     }
@@ -129,7 +130,7 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
         if (isPreparedState()) {
             if (mMediaPlayer.isPlaying) {
                 mMediaPlayer.pause()
-                mTimeHandler.removeMessages(MSG_TIME_WHAT)
+                removeMessage()
                 mCurrentState = STATE_PAUSED
             }
         }
@@ -174,16 +175,30 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     override fun handleMessage(msg: Message?) {
         when (msg?.what) {
             MSG_TIME_WHAT -> {
-                if (mMediaPlayer.currentPosition < mMediaPlayer.duration) {
-
+                if (context is Activity) {
+                    if ((context as Activity).isFinishing) return
                 }
+                changeCurrentPosition(mMediaPlayer.currentPosition, mMediaPlayer.duration)
+                if (mMediaPlayer.currentPosition < mMediaPlayer.duration) mTimeHandler.sendEmptyMessageDelayed(MSG_TIME_WHAT, 1000)
             }
         }
+    }
+
+    /**
+     * 更新[LYVideoPlayer]中的进度条和已播放时长
+     * @param currentPosition 视频已播放时长
+     * @param duration 视频时长
+     */
+    abstract fun changeCurrentPosition(currentPosition: Long, duration: Long)
+
+    private fun removeMessage() {
+        mTimeHandler.removeMessages(MSG_TIME_WHAT)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         LogUtil_d(this.javaClass.simpleName, "onDetachedFromWindow")
+        removeMessage()
         mMediaPlayer.stop()
         mMediaPlayer.release()
         mCurrentState = STATE_IDLE
@@ -192,8 +207,8 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
 
     fun setOnPreparedListener(listener: IMediaPlayer.OnPreparedListener? = null) {
         LogUtil_d(
-            this@BaseVideoPlayer.javaClass.simpleName,
-            "setOnPreparedListener:[listener${if (listener != null) "!= null" else "= null"}]"
+                this@BaseVideoPlayer.javaClass.simpleName,
+                "setOnPreparedListener:[listener${if (listener != null) "!= null" else "= null"}]"
         )
 
         mOnPreparedListener = IMediaPlayer.OnPreparedListener {
@@ -239,18 +254,18 @@ open class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     fun setOnVideoSizeChangedListener(listener: IMediaPlayer.OnVideoSizeChangedListener? = null) {
         LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "setOnVideoSizeChangedListener")
         mVideoSizeChangedListener =
-            IMediaPlayer.OnVideoSizeChangedListener { mp: IMediaPlayer, width: Int, height: Int, sarNum: Int, sarDen: Int ->
-                LogUtil_d(
-                    this@BaseVideoPlayer.javaClass.simpleName,
-                    "OnVideoSizeChangedListener[width=$width,height=$height,sarNum=$sarNum,sarDen=$sarDen]"
-                )
+                IMediaPlayer.OnVideoSizeChangedListener { mp: IMediaPlayer, width: Int, height: Int, sarNum: Int, sarDen: Int ->
+                    LogUtil_d(
+                            this@BaseVideoPlayer.javaClass.simpleName,
+                            "OnVideoSizeChangedListener[width=$width,height=$height,sarNum=$sarNum,sarDen=$sarDen]"
+                    )
 
-                if (width != 0 && height != 0) {
-                    mRenderView.setVideoSize(width, height)
-                    mRenderView.resetLayout()
+                    if (width != 0 && height != 0) {
+                        mRenderView.setVideoSize(width, height)
+                        mRenderView.resetLayout()
+                    }
+                    listener?.onVideoSizeChanged(mp, width, height, sarNum, sarDen)
                 }
-                listener?.onVideoSizeChanged(mp, width, height, sarNum, sarDen)
-            }
         mMediaPlayer.setOnVideoSizeChangedListener(listener)
     }
 

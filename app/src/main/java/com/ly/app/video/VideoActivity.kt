@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.ly.pub.PubActivity
 import com.ly.pub.util.LogUtil_d
+import com.ly.video.millisecondToHMS
 import kotlinx.android.synthetic.main.activity_video.*
 
 const val BUNDLE_VIDEO_ENTITY = "video_entity"
@@ -18,7 +19,7 @@ class VideoActivity : PubActivity() {
     }
 
     private fun initView() {
-        player.goBack?.setOnClickListener {
+        player.goBack.setOnClickListener {
             clickBack()
         }
 
@@ -39,8 +40,8 @@ class VideoActivity : PubActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun initData(source: SourceEntity) {
-        player.title?.text = source.getVideoName()
-        player.duration?.text = source.getVideoDuration()
-        player.current?.text = "0:00"
+        player.title.text = source.getVideoName()
+        player.duration.text = millisecondToHMS(source.duration)
+        player.current.text = "0:00"
     }
 }
