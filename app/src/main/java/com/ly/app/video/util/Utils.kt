@@ -3,7 +3,7 @@ package com.ly.app.video.util
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.ly.app.video.SourceEntity
+import com.ly.app.video.loader.SourceEntity
 
 /**
  * Created by LanYang on 2019/3/21
@@ -33,15 +33,15 @@ fun findSourceBeanFromUri(context: Context, uri: Uri): SourceEntity? {
     if (cursor != null) {
         cursor.moveToFirst()
         sourceEntity = SourceEntity(
-            type = 0,
-            id = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media._ID)),
-            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)),
-            duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)),
-            name = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.TITLE)),
-            thumbPath = "",
-            bookmark = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.BOOKMARK)),
-            bucket = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)),
-            resolution = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.RESOLUTION))
+                type = 0,
+                id = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media._ID)),
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)),
+                duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)),
+                name = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.TITLE)),
+                thumbPath = "",
+                bookmark = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.BOOKMARK)),
+                bucket = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)),
+                resolution = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.RESOLUTION))
         )
     }
     cursor?.close()

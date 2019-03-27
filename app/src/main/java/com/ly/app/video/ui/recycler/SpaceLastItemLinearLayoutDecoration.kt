@@ -1,4 +1,4 @@
-package com.ly.app.video.util
+package com.ly.app.video.ui.recycler
 
 import android.graphics.Rect
 import android.view.View

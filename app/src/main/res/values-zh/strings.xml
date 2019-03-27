@@ -13,5 +13,5 @@
 
     <string name="hint_advertising">advertising</string>
 
-    <string name="toast_video_error"> </string>
+    <string name="toast_video_error">未查找該視頻詳細信息</string>
 </resources>

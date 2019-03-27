@@ -1,11 +1,9 @@
 package com.ly.video
 
-import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
-import android.os.Message
 import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.widget.FrameLayout
@@ -21,7 +19,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
  * Created by LanYang on 2019/2/27
  * 视频播放器;使用该类需要实现带UI控制界面[LYVideoPlayer]
  */
-abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
+abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer {
 
     private val STATE_ERROR = -1
     private val STATE_IDLE = 0
@@ -30,10 +28,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     private val STATE_PLAYING = 3
     private val STATE_PAUSED = 4
     private val STATE_PLAYBACK_COMPLETED = 5
-
-    private val MSG_TIME_WHAT = 1
-
-    private var mIsCanHandler = false
 
     private var mCurrentState = STATE_IDLE
 
@@ -46,8 +40,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     private var mVideoHeight: Int = 0
 
     private lateinit var mRenderView: IRenderView
-
-    private lateinit var mTimeHandler: VideoHandler
 
     protected val mMediaPlayer: IMediaPlayer = IjkMediaPlayer()
 
@@ -74,8 +66,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     }
 
     private fun init() {
-        mTimeHandler = VideoHandler(this)
-
         setOnPreparedListener()
         setOnCompletionListener()
         setOnVideoSizeChangedListener()
@@ -123,7 +113,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     override fun start() {
         if (isPreparedState()) {
             mMediaPlayer.start()
-            startHandleMessage()
             mCurrentState = STATE_PLAYING
         }
     }
@@ -132,7 +121,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
         if (isPreparedState()) {
             if (mMediaPlayer.isPlaying) {
                 mMediaPlayer.pause()
-                stopHandleMessage()
                 mCurrentState = STATE_PAUSED
             }
         }
@@ -174,45 +162,10 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
     override fun captureFrames() {
     }
 
-    override fun handleMessage(msg: Message?) {
-        when (msg?.what) {
-            MSG_TIME_WHAT -> {
-                if (!mIsCanHandler) {
-                    return
-                }
-                if (context is Activity) {
-                    if ((context as Activity).isFinishing) return
-                }
-                changeCurrentPosition(mMediaPlayer.currentPosition, mMediaPlayer.duration)
-                if (mMediaPlayer.currentPosition < mMediaPlayer.duration) mTimeHandler.sendEmptyMessageDelayed(
-                    MSG_TIME_WHAT,
-                    1000
-                )
-            }
-        }
-    }
-
-    /**
-     * 更新[LYVideoPlayer]中的进度条和已播放时长
-     * @param currentPosition 视频已播放时长
-     * @param duration 视频时长
-     */
-    abstract fun changeCurrentPosition(currentPosition: Long, duration: Long)
-
-    private fun startHandleMessage() {
-        mIsCanHandler = true
-        mTimeHandler.sendEmptyMessageDelayed(MSG_TIME_WHAT, 1000)
-    }
-
-    private fun stopHandleMessage() {
-        mIsCanHandler = false
-        mTimeHandler.removeMessages(MSG_TIME_WHAT)
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         LogUtil_d(this.javaClass.simpleName, "onDetachedFromWindow")
-        stopHandleMessage()
+        pause()
         mMediaPlayer.stop()
         mMediaPlayer.release()
         mCurrentState = STATE_IDLE
@@ -250,8 +203,6 @@ abstract class BaseVideoPlayer : FrameLayout, IVideoPlayer, IVideoHandler {
         mOnCompletionListener = IMediaPlayer.OnCompletionListener { mp: IMediaPlayer ->
             LogUtil_d(this@BaseVideoPlayer.javaClass.simpleName, "OnCompletionListener")
             mCurrentState = STATE_PLAYBACK_COMPLETED
-            stopHandleMessage()
-            changeCurrentPosition(mMediaPlayer.duration, mMediaPlayer.duration)
             listener?.onCompletion(mp)
         }
         mMediaPlayer.setOnCompletionListener(mOnCompletionListener)

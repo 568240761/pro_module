@@ -27,21 +27,21 @@
             app:srcCompat="@drawable/video_back" />
 
         <TextView
-            android:id="@+id/video_title"
-            style="@style/video_text_style_16_FFFFFF"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@+id/video_more"
-            app:layout_constraintEnd_toStartOf="@+id/video_more"
-            app:layout_constraintStart_toEndOf="@+id/video_back"
-            app:layout_constraintTop_toTopOf="@+id/video_more"
-            tools:text="小偷家族小偷家族小偷家族小偷家族小偷家族小偷家族小偷家族" />
+                android:id="@+id/video_title"
+                style="@style/video_text_style_16_FFFFFF"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="@+id/video_more"
+                app:layout_constraintEnd_toStartOf="@+id/video_more"
+                app:layout_constraintStart_toEndOf="@+id/video_back"
+                app:layout_constraintTop_toTopOf="@+id/video_more"
+                tools:text="小偷家族"/>
 
         <ImageView
             android:id="@+id/video_more"
@@ -93,27 +93,27 @@
                 app:layout_constraintTop_toBottomOf="@+id/video_current"/>
 
         <TextView
-            android:id="@+id/video_current"
-            style="@style/video_text_style_16_FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="3:45" />
+                android:id="@+id/video_current"
+                style="@style/video_text_style_16_FFFFFF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="3:45" android:text="0:00"/>
 
         <TextView
-            android:id="@+id/video_duration"
-            style="@style/video_text_style_16_FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/video_current"
-            tools:text="1:23:45" />
+                android:id="@+id/video_duration"
+                style="@style/video_text_style_16_FFFFFF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/video_current"
+                tools:text="1:23:45" android:text="0:00"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

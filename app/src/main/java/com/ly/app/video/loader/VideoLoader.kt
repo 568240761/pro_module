@@ -1,4 +1,4 @@
-package com.ly.app.video
+package com.ly.app.video.loader
 
 import android.content.Context
 import android.database.Cursor
@@ -70,15 +70,15 @@ class VideoLoader(private val context: Context, private val callback: VideoLoade
                 thumbCursor?.close()
 
                 val videoEntity = SourceEntity(
-                    type = 0,
-                    id = id,
-                    path = data.getString(data.getColumnIndex(MediaStore.Video.Media.DATA)),
-                    duration = data.getLong(data.getColumnIndex(MediaStore.Video.Media.DURATION)),
-                    name = data.getString(data.getColumnIndex(MediaStore.Video.Media.TITLE)),
-                    thumbPath = thumbPath,
-                    bookmark = data.getInt(data.getColumnIndex(MediaStore.Video.Media.BOOKMARK)),
-                    bucket = data.getString(data.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)),
-                    resolution = data.getString(data.getColumnIndex(MediaStore.Video.Media.RESOLUTION))
+                        type = 0,
+                        id = id,
+                        path = data.getString(data.getColumnIndex(MediaStore.Video.Media.DATA)),
+                        duration = data.getLong(data.getColumnIndex(MediaStore.Video.Media.DURATION)),
+                        name = data.getString(data.getColumnIndex(MediaStore.Video.Media.TITLE)),
+                        thumbPath = thumbPath,
+                        bookmark = data.getInt(data.getColumnIndex(MediaStore.Video.Media.BOOKMARK)),
+                        bucket = data.getString(data.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)),
+                        resolution = data.getString(data.getColumnIndex(MediaStore.Video.Media.RESOLUTION))
                 )
                 LogUtil_d(this::class.java.simpleName, videoEntity.toString())
 

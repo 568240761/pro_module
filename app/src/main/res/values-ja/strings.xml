@@ -11,7 +11,7 @@
 
     <string name="menu_setting">設定</string>
 
-    <string name="hint_advertising">advertising</string>
+    <string name="hint_advertising">広告</string>
 
-    <string name="toast_video_error"> </string>
+    <string name="toast_video_error">ビデオ詳細情報は検索されなかった</string>
 </resources>

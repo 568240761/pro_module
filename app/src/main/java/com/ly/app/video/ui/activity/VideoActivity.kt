@@ -1,13 +1,14 @@
-package com.ly.app.video
+package com.ly.app.video.ui.activity
 
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import com.ly.app.video.util.findSourceBeanFromUri
+import com.ly.app.video.BuildConfig
+import com.ly.app.video.R
+import com.ly.app.video.loader.SourceEntity
 import com.ly.pub.PubActivity
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.showToast
-import com.ly.video.millisecondToHMS
 import kotlinx.android.synthetic.main.activity_video.*
 
 const val BUNDLE_VIDEO_ENTITY = "video_entity"
@@ -29,27 +30,15 @@ class VideoActivity : PubActivity() {
         if (source != null) {
             initData(source)
             val uri = Uri.parse(source.path)
-            LogUtil_d(this.javaClass.simpleName, "应用内跳转过来uri=$uri")
+            LogUtil_d(this.javaClass.simpleName, "uri=$uri")
             player.setVideoURI(uri, isDebug = BuildConfig.DEBUG)
         } else {
-            val uri = intent.data
-            if (uri != null) {
-                LogUtil_d(this.javaClass.simpleName, "应用外跳转过来uri=$uri")
-                val sourceEntity = findSourceBeanFromUri(this, uri)
-                if (sourceEntity == null) {
-                    showToast(R.string.toast_video_error)
-                } else {
-                    initData(sourceEntity)
-                }
-                player.setVideoURI(uri, isDebug = BuildConfig.DEBUG)
-            }
+            showToast(R.string.toast_video_error)
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun initData(source: SourceEntity) {
         player.title.text = source.getVideoName()
-        player.duration.text = millisecondToHMS(source.duration)
-        player.current.text = "0:00"
     }
 }

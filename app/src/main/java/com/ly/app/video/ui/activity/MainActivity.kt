@@ -1,4 +1,4 @@
-package com.ly.app.video
+package com.ly.app.video.ui.activity
 
 import android.Manifest
 import android.database.Cursor
@@ -6,7 +6,11 @@ import android.os.Bundle
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ly.app.video.util.SpaceLastItemLinearLayoutDecoration
+import com.ly.app.video.R
+import com.ly.app.video.loader.SourceEntity
+import com.ly.app.video.loader.VideoLoader
+import com.ly.app.video.loader.VideoLoaderCallback
+import com.ly.app.video.ui.recycler.SpaceLastItemLinearLayoutDecoration
 import com.ly.pub.PUBLIC_IMAGE_LOADER
 import com.ly.pub.PubActivity
 import com.ly.pub.util.PermissionCallback
