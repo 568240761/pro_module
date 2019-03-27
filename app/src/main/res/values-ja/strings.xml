@@ -12,4 +12,6 @@
     <string name="menu_setting">設定</string>
 
     <string name="hint_advertising">advertising</string>
+
+    <string name="toast_video_error"> </string>
 </resources>

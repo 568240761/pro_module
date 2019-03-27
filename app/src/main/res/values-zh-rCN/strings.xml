@@ -12,4 +12,6 @@
     <string name="menu_setting">设置</string>
 
     <string name="hint_advertising">广告</string>
+
+    <string name="toast_video_error">未查找该视频信息</string>
 </resources>

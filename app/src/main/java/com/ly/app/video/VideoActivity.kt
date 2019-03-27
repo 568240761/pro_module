@@ -3,8 +3,10 @@ package com.ly.app.video
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import com.ly.app.video.util.findSourceBeanFromUri
 import com.ly.pub.PubActivity
 import com.ly.pub.util.LogUtil_d
+import com.ly.pub.util.showToast
 import com.ly.video.millisecondToHMS
 import kotlinx.android.synthetic.main.activity_video.*
 
@@ -33,6 +35,12 @@ class VideoActivity : PubActivity() {
             val uri = intent.data
             if (uri != null) {
                 LogUtil_d(this.javaClass.simpleName, "应用外跳转过来uri=$uri")
+                val sourceEntity = findSourceBeanFromUri(this, uri)
+                if (sourceEntity == null) {
+                    showToast(R.string.toast_video_error)
+                } else {
+                    initData(sourceEntity)
+                }
                 player.setVideoURI(uri, isDebug = BuildConfig.DEBUG)
             }
         }

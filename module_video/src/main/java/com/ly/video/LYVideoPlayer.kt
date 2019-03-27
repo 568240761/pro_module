@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_i
 import kotlinx.android.synthetic.main.video_layout_player.view.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
@@ -32,10 +33,10 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
-            context,
-            attrs,
-            defStyleAttr,
-            defStyleRes
+        context,
+        attrs,
+        defStyleAttr,
+        defStyleRes
     ) {
         loadView()
     }
@@ -75,6 +76,8 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
 
         setOnPreparedListener(IMediaPlayer.OnPreparedListener { playStatus.visibility = View.VISIBLE })
 
+        setOnCompletionListener(IMediaPlayer.OnCompletionListener { playStatus.setImageResource(R.drawable.video_start) })
+
         setOnBufferingUpdateListener(IMediaPlayer.OnBufferingUpdateListener { _, percent: Int ->
             LogUtil_i(this@LYVideoPlayer.javaClass.simpleName, "percent=$percent")
         })
@@ -110,6 +113,7 @@ class LYVideoPlayer : BaseVideoPlayer, View.OnClickListener {
     }
 
     override fun changeCurrentPosition(currentPosition: Long, duration: Long) {
+        LogUtil_d(this@LYVideoPlayer.javaClass.simpleName, "cur=$currentPosition dur=$duration")
         current.text = millisecondToHMS(currentPosition)
         seekbar.progress = (currentPosition.toFloat() / duration * 100).toInt()
     }

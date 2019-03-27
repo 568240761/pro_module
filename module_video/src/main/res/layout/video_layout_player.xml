@@ -56,64 +56,53 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-            android:id="@+id/video_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/video_start" android:visibility="gone"/>
+        android:id="@+id/video_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/video_start" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/video_layout_bottom"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@color/video_layout_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <SeekBar
-            android:id="@+id/video_seekbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@null"
-            android:max="100"
-            android:maxHeight="2dp"
-            android:minHeight="2dp"
-            android:progressDrawable="@drawable/video_seekbar_progress"
-            android:thumb="@drawable/video_seekbar_thumb"
-            app:layout_constraintBottom_toBottomOf="@+id/video_current"
-            app:layout_constraintEnd_toStartOf="@+id/video_current"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/video_current" />
+                android:id="@+id/video_seekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@null"
+                android:max="100"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:progressDrawable="@drawable/video_seekbar_progress"
+                android:thumb="@drawable/video_seekbar_thumb"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/video_current"/>
 
         <TextView
             android:id="@+id/video_current"
             style="@style/video_text_style_16_FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/text"
-            app:layout_constraintEnd_toStartOf="@+id/text"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="3:45" />
-
-        <TextView
-            android:id="@+id/text"
-            style="@style/video_text_style_16_FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="/"
-            app:layout_constraintBaseline_toBaselineOf="@+id/video_duration"
-            app:layout_constraintEnd_toStartOf="@+id/video_duration" />
 
         <TextView
             android:id="@+id/video_duration"
@@ -122,9 +111,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/video_current"
             tools:text="1:23:45" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
