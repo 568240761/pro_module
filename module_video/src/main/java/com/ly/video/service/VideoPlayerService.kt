@@ -1,4 +1,4 @@
-package com.ly.video
+package com.ly.video.service
 
 import android.app.Service
 import android.content.Context

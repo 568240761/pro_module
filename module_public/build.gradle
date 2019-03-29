@@ -34,7 +34,7 @@ dependencies {
     api "com.google.code.gson:gson:$GSON_VERSION"
     api "com.google.android.material:material:$MATERIAL"
     api "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
-    implementation "androidx.lifecycle:lifecycle-process:$ANDROID_X_LIFECYCLE"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$ANDROID_X_LIFECYCLE"
+    api "androidx.lifecycle:lifecycle-process:$ANDROID_X_LIFECYCLE"
+    api "androidx.lifecycle:lifecycle-common-java8:$ANDROID_X_LIFECYCLE"
     implementation "androidx.multidex:multidex:$ANDROID_X_MULTIDEX"
 }

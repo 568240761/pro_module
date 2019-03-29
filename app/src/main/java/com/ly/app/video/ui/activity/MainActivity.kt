@@ -17,7 +17,9 @@ import com.ly.pub.util.PermissionCallback
 import com.ly.pub.util.checkPermission
 import com.ly.pub.util.jumpNewPage
 import com.ly.pub.util.showToast
+import com.ly.video.hover.HoverManager
 import com.ly.video.millisecondToHMS
+import com.ly.video.player.VideoPlayerManager
 import com.ly.widget.recycler.adapter.CommonAdapter
 import com.ly.widget.recycler.base.ViewHolder
 import com.ly.widget.recycler.decoration.LineLinearLayoutDecoration
@@ -52,6 +54,8 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
                     val bundle = Bundle()
                     bundle.putParcelable(BUNDLE_VIDEO_ENTITY, t)
                     jumpNewPage(this@MainActivity, VideoActivity::class.java, bundle)
+
+                    HoverManager.destroyHoverPlayer()
                 }
             }
         }
@@ -66,20 +70,18 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
         recycler.adapter = mAdapter
 
         checkPermission(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                object : PermissionCallback() {
-                    override fun onDenied(result: Int) {
-                        super.onDenied(result)
-                        showToast("未授予读写权限")
-                        clickBack()
-                    }
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            object : PermissionCallback {
+                override fun onDenied(result: Int) {
+                    showToast("未授予读写权限")
+                    clickBack()
+                }
 
-                    override fun onGranted() {
-                        super.onGranted()
-                        LoaderManager.getInstance(this@MainActivity).initLoader(0, null, mLoader)
-                    }
-                })
+                override fun onGranted() {
+                    LoaderManager.getInstance(this@MainActivity).initLoader(0, null, mLoader)
+                }
+            })
 
         bottom_bar.replaceMenu(R.menu.menu_bottom_bar)
     }
@@ -97,5 +99,11 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
     override fun onLoaderReset(loader: Loader<Cursor>) {
         mList.clear()
         recycler.adapter?.notifyDataSetChanged()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        VideoPlayerManager.destroyVideoPlayer()
+        HoverManager.destroyHoverPlayer()
     }
 }

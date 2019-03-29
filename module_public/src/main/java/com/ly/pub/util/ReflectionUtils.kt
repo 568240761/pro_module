@@ -125,7 +125,11 @@ fun getFieldValue(`object`: Any, fieldName: String): Any? {
  * @param parameterTypes 方法参数类型
  * @return 方法实例
  */
-fun getDeclaredMethod(`object`: Any, methodName: String, parameterTypes: Array<Class<*>>): Method? {
+fun getDeclaredMethod(
+    `object`: Any,
+    methodName: String,
+    parameterTypes: Array<Class<*>>
+): Method? {
 
     var superClass: Class<*>? = `object`.javaClass
     while (superClass != Any::class.java) {
@@ -152,7 +156,9 @@ fun getDeclaredMethod(`object`: Any, methodName: String, parameterTypes: Array<C
  * @throws IllegalArgumentException 没有找到该方法时,抛出该异常
  */
 fun invokeMethod(
-    `object`: Any, methodName: String, parameterTypes: Array<Class<*>>,
+    `object`: Any,
+    methodName: String,
+    parameterTypes: Array<Class<*>>,
     parameters: Array<Any>
 ): Any? {
 
@@ -170,5 +176,21 @@ fun invokeMethod(
     }
 
     return null
-
 }
+
+/**
+ * 获取该类的所有父类型
+ * @param clazz 该类型
+ * @return 所有父类型的集合,除了[Object]
+ */
+fun getAllSuperClass(clazz: Class<*>): ArrayList<Class<*>> {
+    val list = ArrayList<Class<*>>()
+    var superClass = clazz.superclass
+    while (superClass != null) {
+        if (superClass.name == "java.lang.Object") break
+        list.add(superClass)
+        superClass = superClass.superclass
+    }
+    return list
+}
+

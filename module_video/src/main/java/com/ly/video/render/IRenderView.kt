@@ -1,6 +1,7 @@
-package com.ly.video
+package com.ly.video.render
 
 import android.view.View
+import com.ly.video.player.IVideoPlayer
 
 /**
  * Created by LanYang on 2019/3/1
@@ -9,10 +10,6 @@ import android.view.View
 interface IRenderView {
 
     fun getView(): View
-
-    fun resetLayout()
-
-    fun bindMediaPlayer(player: IVideoPlayer)
 
     fun setVideoSize(videoWidth: Int, videoHeight: Int)
 }

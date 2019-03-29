@@ -27,27 +27,28 @@ fun checkPermission(context: Context, permissions: Array<String>, callback: Perm
         }
     }
     if (list.size > 0) {
-        PermissionActivity.requestPermission(context, list, callback)
+        PubPermissionActivity.requestPermission(context, list, callback)
     } else {
         callback.onGranted()
     }
 }
 
 private const val INTENT_EXTRA_KEY_PERMISSION = "KEY_PERMISSION"
+private const val REQUEST_CODE_PUB_PERMISSION = 11
 
-class PermissionActivity : AppCompatActivity() {
+class PubPermissionActivity : AppCompatActivity() {
 
     companion object {
         private var callback: PermissionCallback? = null
         fun requestPermission(context: Context, permissions: ArrayList<String>, permissionCallback: PermissionCallback) {
             callback = permissionCallback
-            val intent = Intent(context, PermissionActivity::class.java)
+            val intent = Intent(context, PubPermissionActivity::class.java)
             intent.putExtra(INTENT_EXTRA_KEY_PERMISSION, permissions)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
         }
     }
-    private val REQUEST_CODE = 11
+
     private lateinit var permissions: ArrayList<String>
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +60,12 @@ class PermissionActivity : AppCompatActivity() {
         val array = Array<String>(permissions.size) {
             permissions.get(it)
         }
-        requestPermissions(array, REQUEST_CODE)
+        requestPermissions(array, REQUEST_CODE_PUB_PERMISSION)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_PUB_PERMISSION) {
             var flag = true
             for (result in grantResults) {
                 if (result == PackageManager.PERMISSION_DENIED) {
@@ -88,16 +89,15 @@ class PermissionActivity : AppCompatActivity() {
     }
 }
 
-open class PermissionCallback {
+interface PermissionCallback {
+
     /**
      * 同意授权回调
      */
-    open fun onGranted() {}
+    fun onGranted()
 
     /**
      * 拒绝授权回调
      */
-    open fun onDenied(result: Int) {
-
-    }
+    fun onDenied(result: Int)
 }

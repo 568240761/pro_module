@@ -1,9 +1,11 @@
-package com.ly.video
+package com.ly.video.hover
+
 
 /**
  * Created by LanYang on 2019/3/27
  */
-interface IHoverPlayer {
+interface IHover {
+
     /**
      * 设置悬浮窗口大小
      * @param width 窗口的宽
@@ -20,11 +22,18 @@ interface IHoverPlayer {
     fun setGravity(gravity: Int, xOffset: Int, yOffset: Int)
 
     /**
+     * 设置悬浮窗口是否可以移动
+     * @param canMove true,可以移动;false,不可以移动
+     */
+    fun setCanMove(canMove: Boolean)
+
+    /**
      * 更新悬浮窗口位置
      * @param x 横坐标相对位移
      * @param y 纵坐标相对位移
      */
     fun updatePosition(x: Int, y: Int)
+
 
     /**
      * 显示悬浮窗口
@@ -34,5 +43,5 @@ interface IHoverPlayer {
     /**
      * 销毁悬浮窗口
      */
-    fun destroy()
+    fun dismiss()
 }

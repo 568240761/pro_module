@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by LanYang on 2019/3/4
  */
-class MeasureHelper(view: View) {
+class VideoMeasureUtil(view: View) {
 
     private var mWeakView: WeakReference<View>? = null
 
