@@ -11,6 +11,7 @@ import tv.danmaku.ijk.media.player.IMediaPlayer
 
 /**
  * Created by LanYang on 2019/3/29
+ * 默认实现的有UI界面的悬浮窗口
  */
 class LYHover : BaseHover(), View.OnClickListener {
 
@@ -23,12 +24,14 @@ class LYHover : BaseHover(), View.OnClickListener {
     override fun initView(view: View) {
         mPlayStatus = view.findViewById(R.id.hover_status)
         mPlayStatus.setOnClickListener(this)
-        if (VideoPlayerManager.getIVideoPlayer().getPlayStatus()== STATE_PREPARED||
-                VideoPlayerManager.getIVideoPlayer().getPlayStatus()== STATE_COMPLETED)
+        if (VideoPlayerManager.getIVideoPlayer().getPlayStatus() == STATE_PREPARED ||
+                VideoPlayerManager.getIVideoPlayer().getPlayStatus() == STATE_COMPLETED)
             mPlayStatus.visibility = View.VISIBLE
 
         VideoPlayerManager.getIVideoPlayer().clearListeners()
         VideoPlayerManager.getIVideoPlayer().setOnCompletionListener(IMediaPlayer.OnCompletionListener {
+            if(mPlayStatus.visibility==View.GONE)
+                mPlayStatus.visibility = View.VISIBLE
             mPlayStatus.setImageResource(R.drawable.video_layer_start)
         })
         VideoPlayerManager.getIVideoPlayer().setOnErrorListener()
@@ -44,8 +47,8 @@ class LYHover : BaseHover(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.hover_status->{
+        when (v?.id) {
+            R.id.hover_status -> {
                 if (VideoPlayerManager.getIVideoPlayer().isPreparedState()) {
                     if (VideoPlayerManager.getIVideoPlayer().isPlaying()) {
                         VideoPlayerManager.getIVideoPlayer().pause()

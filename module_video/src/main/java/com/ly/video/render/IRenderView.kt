@@ -9,7 +9,5 @@ import com.ly.video.player.IVideoPlayer
  */
 interface IRenderView {
 
-    fun getView(): View
-
     fun setVideoSize(videoWidth: Int, videoHeight: Int)
 }

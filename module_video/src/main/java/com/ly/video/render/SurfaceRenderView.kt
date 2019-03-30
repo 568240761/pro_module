@@ -48,10 +48,6 @@ class SurfaceRenderView : SurfaceView, IRenderView {
         holder.addCallback(mSurfaceViewCallback)
     }
 
-    override fun getView(): View {
-        return this
-    }
-
     override fun setVideoSize(videoWidth: Int, videoHeight: Int) {
         mVideoMeasureUtil.setVideoSize(videoWidth, videoHeight)
         requestLayout()

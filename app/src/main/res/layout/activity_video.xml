@@ -7,7 +7,7 @@
                                                    android:background="@android:color/black"
                                                    tools:context=".ui.activity.VideoActivity">
 
-    <com.ly.video.widget.LYVideoView
+    <com.ly.video.player.LYVideoView
             android:id="@+id/player"
             android:layout_width="0dp"
             android:layout_height="0dp"

@@ -8,17 +8,15 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
-import com.ly.video.R
 import com.ly.video.render.IRenderView
 import com.ly.video.render.SurfaceRenderView
 
 /**
  * Created by LanYang on 2019/3/27
- * 悬浮窗口,默认有界面实现类[LYHover];
- * 如果需要自定义界面,必须继承[BaseHover];
- * 注意，布局资源文件中一定要包含id为hover_render的[IRenderView]控件
+ * 悬浮窗口基类;默认会使用有UI界面的悬浮窗口[LYHover],可以通过继承[BaseHover]类来实现自定义UI界面的悬浮窗口
  */
 abstract class BaseHover : IHover {
 
@@ -26,7 +24,7 @@ abstract class BaseHover : IHover {
 
     private val mLayoutParams = WindowManager.LayoutParams()
 
-    private lateinit var mView: View
+    private val mView = FrameLayout(PUBLIC_APPLICATION)
 
     private lateinit var mRenderView: IRenderView
 
@@ -40,21 +38,29 @@ abstract class BaseHover : IHover {
         }
         mLayoutParams.type = type
         mLayoutParams.flags =
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         mLayoutParams.windowAnimations = 0
         mLayoutParams.format = PixelFormat.RGBA_8888
     }
 
     private fun setContentView() {
+        mView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+
+        val surfaceRenderView = SurfaceRenderView(PUBLIC_APPLICATION)
+        surfaceRenderView.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT)
+        mView.addView(surfaceRenderView)
+        mRenderView = surfaceRenderView
+
         val inflate = PUBLIC_APPLICATION.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        mView = inflate.inflate(getLayoutId(), null)
-        mRenderView = mView.findViewById<SurfaceRenderView>(R.id.hover_render)
+        inflate.inflate(getLayoutId(), mView, true)
         initView(mView)
     }
 
-    abstract fun getLayoutId(): Int
+    protected abstract fun getLayoutId(): Int
 
-    abstract fun initView(view: View)
+    protected abstract fun initView(view: View)
 
     override fun setSize(width: Int, height: Int) {
         mLayoutParams.width = width
@@ -68,6 +74,7 @@ abstract class BaseHover : IHover {
         mLayoutParams.y = yOffset
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun setCanMove(canMove: Boolean) {
         if (canMove) {
             mView.setOnTouchListener(object : View.OnTouchListener {
