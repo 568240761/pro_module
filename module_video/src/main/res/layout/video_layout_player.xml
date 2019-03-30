@@ -33,7 +33,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/video_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/video_title"
-                app:srcCompat="@drawable/video_back"/>
+                app:srcCompat="@drawable/video_vector_back"/>
 
         <TextView
                 android:id="@+id/video_title"
@@ -61,19 +61,19 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/video_more"/>
+                app:srcCompat="@drawable/video_vector_more"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
             android:id="@+id/video_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/video_start"/>
+            app:srcCompat="@drawable/video_layer_start"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/video_layout_bottom"
@@ -94,8 +94,8 @@
                 android:max="100"
                 android:maxHeight="2dp"
                 android:minHeight="2dp"
-                android:progressDrawable="@drawable/video_seekbar_progress"
-                android:thumb="@drawable/video_seekbar_thumb"
+                android:progressDrawable="@drawable/video_layer_seekbar_progress"
+                android:thumb="@drawable/video_shape_seekbar_thumb"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -154,7 +154,7 @@ class LYVideoView : FrameLayout, View.OnClickListener, DefaultLifecycleObserver 
             duration.text = millisecondToHMS(VideoPlayerManager.getIVideoPlayer().getDuration())
         })
         VideoPlayerManager.getIVideoPlayer().setOnCompletionListener(IMediaPlayer.OnCompletionListener {
-            playStatus.setImageResource(R.drawable.video_start)
+            playStatus.setImageResource(R.drawable.video_layer_start)
             stopHandleMessage()
             changeCurrentPosition(
                 VideoPlayerManager.getIVideoPlayer().getDuration(),
@@ -165,12 +165,12 @@ class LYVideoView : FrameLayout, View.OnClickListener, DefaultLifecycleObserver 
         VideoPlayerManager.getIVideoPlayer().setIChangeUIListener(object :IChangeUIListener{
             override fun startCauseUI() {
                 startHandleMessage()
-                playStatus.setImageResource(R.drawable.video_pause)
+                playStatus.setImageResource(R.drawable.video_layer_pause)
             }
 
             override fun pauseCauseUI() {
                 stopHandleMessage()
-                playStatus.setImageResource(R.drawable.video_start)
+                playStatus.setImageResource(R.drawable.video_layer_start)
             }
         })
 

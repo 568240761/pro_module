@@ -29,16 +29,16 @@ class LYHover : BaseHover(), View.OnClickListener {
 
         VideoPlayerManager.getIVideoPlayer().clearListeners()
         VideoPlayerManager.getIVideoPlayer().setOnCompletionListener(IMediaPlayer.OnCompletionListener {
-            mPlayStatus.setImageResource(R.drawable.video_start)
+            mPlayStatus.setImageResource(R.drawable.video_layer_start)
         })
         VideoPlayerManager.getIVideoPlayer().setOnErrorListener()
         VideoPlayerManager.getIVideoPlayer().setIChangeUIListener(object : IChangeUIListener {
             override fun startCauseUI() {
-                mPlayStatus.setImageResource(R.drawable.video_pause)
+                mPlayStatus.setImageResource(R.drawable.video_layer_pause)
             }
 
             override fun pauseCauseUI() {
-                mPlayStatus.setImageResource(R.drawable.video_start)
+                mPlayStatus.setImageResource(R.drawable.video_layer_start)
             }
         })
     }
