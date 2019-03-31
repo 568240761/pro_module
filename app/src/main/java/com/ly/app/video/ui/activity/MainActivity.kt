@@ -75,7 +75,6 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
             object : PermissionCallback {
                 override fun onDenied(result: Int) {
                     showToast("未授予读写权限")
-                    clickBack()
                 }
 
                 override fun onGranted() {
@@ -101,8 +100,9 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
         recycler.adapter?.notifyDataSetChanged()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun clickBack() {
+        super.clickBack()
         VideoPlayerManager.destroyVideoPlayer()
         HoverManager.destroyHoverPlayer()
     }

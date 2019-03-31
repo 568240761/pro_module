@@ -1,6 +1,8 @@
 package com.ly.app.video.ui.activity
 
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.ly.app.video.BuildConfig
@@ -18,6 +20,9 @@ class VideoActivity : PubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.BLACK
+        }
         initView()
     }
 
