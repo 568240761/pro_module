@@ -2,9 +2,12 @@ package com.ly.pub.util
 
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.PUBLIC_IS_LOG
+import java.io.File
+import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -91,6 +94,30 @@ fun isMeizu(): Boolean {
     val flag = Build.MANUFACTURER
     LogUtil_d("Manufacturer", "手机厂商:$flag")
     return flag == "Meizu"
+}
+
+/**
+ * 保存图片
+ * @param bitmap 图片实例
+ * @param path 路径
+ * @param name 名称
+ */
+fun saveBitmap(bitmap: Bitmap, path: String, name: String) {
+    val dir = File(path)
+    if (!dir.exists()) dir.mkdirs()
+
+    val file = File("$path/$name")
+    if (!file.exists()) file.createNewFile()
+
+    try {
+        val out = FileOutputStream(file)
+        if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+            out.flush()
+            out.close()
+        }
+    } catch (e: Exception) {
+        LogUtil_e(e)
+    }
 }
 
 

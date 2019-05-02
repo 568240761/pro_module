@@ -1,6 +1,7 @@
 package com.ly.video.render
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.AttributeSet
 import android.view.SurfaceHolder
@@ -15,11 +16,9 @@ import com.ly.video.player.VideoPlayerManager
  * Created by LanYang on 2019/3/4
  */
 
-class SurfaceRenderView : SurfaceView, IRenderView {
+class SurfaceRenderView : SurfaceView,SurfaceHolder.Callback,IRenderView {
 
     private lateinit var mVideoMeasureUtil: VideoMeasureUtil
-
-    private val mSurfaceViewCallback = SurfaceViewCallback()
 
     constructor(context: Context?) : super(context) {
         initView()
@@ -45,7 +44,7 @@ class SurfaceRenderView : SurfaceView, IRenderView {
 
     private fun initView() {
         mVideoMeasureUtil = VideoMeasureUtil(this)
-        holder.addCallback(mSurfaceViewCallback)
+        holder.addCallback(this)
     }
 
     override fun setVideoSize(videoWidth: Int, videoHeight: Int) {
@@ -57,25 +56,21 @@ class SurfaceRenderView : SurfaceView, IRenderView {
         mVideoMeasureUtil.doMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(mVideoMeasureUtil.getMeasuredWidth(), mVideoMeasureUtil.getMeasuredHeight())
     }
-}
-
-class SurfaceViewCallback : SurfaceHolder.Callback {
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        LogUtil_d(this@SurfaceViewCallback.javaClass.simpleName, "surfaceCreated")
+        LogUtil_d(this.javaClass.simpleName, "surfaceCreated")
+        VideoPlayerManager.getIVideoPlayer().setDisplay(holder)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
         LogUtil_d(
-                this@SurfaceViewCallback.javaClass.simpleName,
-                "surfaceChanged[holder=${holder.toString()};format=$format;width=$width;height=$height]"
+            this.javaClass.simpleName,
+            "surfaceChanged[holder=${holder.toString()};format=$format;width=$width;height=$height]"
         )
-        VideoPlayerManager.getIVideoPlayer().setDisplay(holder)
     }
 
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        LogUtil_d(this@SurfaceViewCallback.javaClass.simpleName, "surfaceDestroyed")
+        LogUtil_d(this.javaClass.simpleName, "surfaceDestroyed")
     }
-
 }

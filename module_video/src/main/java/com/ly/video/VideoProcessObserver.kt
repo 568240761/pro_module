@@ -6,6 +6,7 @@ import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_e
 import com.ly.video.player.VideoPlayerManager
 
+
 /**
  * Created by LanYang on 2019/3/29
  * 对APP生命周期进行观察,在[VideoPlayerManager]中实例化

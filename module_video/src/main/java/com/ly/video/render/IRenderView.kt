@@ -1,7 +1,7 @@
 package com.ly.video.render
 
-import android.view.View
-import com.ly.video.player.IVideoPlayer
+import android.graphics.Bitmap
+
 
 /**
  * Created by LanYang on 2019/3/1
@@ -10,4 +10,6 @@ import com.ly.video.player.IVideoPlayer
 interface IRenderView {
 
     fun setVideoSize(videoWidth: Int, videoHeight: Int)
+
+    fun captureFrame(){}
 }

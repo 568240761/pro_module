@@ -10,8 +10,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.ly.video.R
 import com.ly.video.millisecondToHMS
-import com.ly.video.player.BaseVideoView
-import com.ly.video.player.VideoPlayerManager
 import kotlinx.android.synthetic.main.video_layout_player.view.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
 
@@ -29,10 +27,10 @@ class LYVideoView : BaseVideoView {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
-            context,
-            attrs,
-            defStyleAttr,
-            defStyleRes
+        context,
+        attrs,
+        defStyleAttr,
+        defStyleRes
     )
 
     /**返回按钮*/
@@ -79,6 +77,9 @@ class LYVideoView : BaseVideoView {
                 }
             }
         }
+        mMoreFunc.setOnClickListener {
+            VideoPlayerManager.getIVideoPlayer().captureFrame()
+        }
     }
 
     /**
@@ -110,8 +111,8 @@ class LYVideoView : BaseVideoView {
             mPlayStatus.setImageResource(R.drawable.video_layer_start)
             stopHandleMessage()
             changeCurrentPosition(
-                    VideoPlayerManager.getIVideoPlayer().getDuration(),
-                    VideoPlayerManager.getIVideoPlayer().getDuration()
+                VideoPlayerManager.getIVideoPlayer().getDuration(),
+                VideoPlayerManager.getIVideoPlayer().getDuration()
             )
         })
         VideoPlayerManager.getIVideoPlayer().setOnErrorListener()

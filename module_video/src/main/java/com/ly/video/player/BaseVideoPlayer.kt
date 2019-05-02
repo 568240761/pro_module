@@ -2,7 +2,9 @@ package com.ly.video.player
 
 import android.media.AudioManager
 import android.net.Uri
+import android.view.Surface
 import android.view.SurfaceHolder
+import android.view.TextureView
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_i
@@ -70,6 +72,10 @@ class BaseVideoPlayer : IVideoPlayer {
 
     override fun setDisplay(holder: SurfaceHolder?) {
         mMediaPlayer.setDisplay(holder)
+    }
+
+    override fun setSurface(surface: Surface?) {
+        mMediaPlayer.setSurface(surface)
     }
 
     override fun prepareAsync() {
@@ -155,10 +161,20 @@ class BaseVideoPlayer : IVideoPlayer {
         return mCurrentState
     }
 
+    override fun isCanCapture(): Boolean {
+        return this::mRenderView.isInitialized && mRenderView is TextureView
+    }
+
     override fun captureFrame() {
+        if (isCanCapture()) {
+            mRenderView.captureFrame()
+        }
     }
 
     override fun captureFrames() {
+        if (isCanCapture()) {
+
+        }
     }
 
     override fun destroy() {

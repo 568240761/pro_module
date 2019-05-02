@@ -17,11 +17,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.ly.pub.util.LogUtil_d
 import com.ly.video.HoverCallback
 import com.ly.video.checkHoverPermission
-import com.ly.video.hover.BaseHover
 import com.ly.video.hover.HoverManager
 import com.ly.video.hover.HoverOption
 import com.ly.video.render.IRenderView
-import com.ly.video.render.SurfaceRenderView
+import com.ly.video.render.TextureRenderView
 
 /**
  * Created by LanYang on 2019/3/30
@@ -83,13 +82,21 @@ abstract class BaseVideoView : FrameLayout, DefaultLifecycleObserver {
     private lateinit var mRender: IRenderView
 
     private fun loadView() {
-        val surfaceRenderView = SurfaceRenderView(context)
-        surfaceRenderView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER)
-        addView(surfaceRenderView)
-        mRender = surfaceRenderView
+//        val surfaceRenderView = SurfaceRenderView(context)
+//        surfaceRenderView.layoutParams = FrameLayout.LayoutParams(
+//                FrameLayout.LayoutParams.WRAP_CONTENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT,
+//                Gravity.CENTER)
+//        addView(surfaceRenderView)
+//        mRender = surfaceRenderView
+
+        val textureRenderView = TextureRenderView(context)
+        textureRenderView.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER)
+        addView(textureRenderView)
+        mRender = textureRenderView
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
@@ -159,14 +166,18 @@ abstract class BaseVideoView : FrameLayout, DefaultLifecycleObserver {
         LogUtil_d(this@BaseVideoView.javaClass.simpleName, "onDestroy")
         stopHandleMessage()
 
+        val isPlaying = VideoPlayerManager.getIVideoPlayer().isPlaying()
+
         //检查是否拥有悬浮权限
         checkHoverPermission(this@BaseVideoView.context, object : HoverCallback {
             override fun success() {
                 //视频正在播放,则打开悬浮窗口
-                if (VideoPlayerManager.getIVideoPlayer().isPlaying()) {
+                if (isPlaying) {
                     val option = HoverOption()
                     HoverManager.createHoverPlayer(option)
                     HoverManager.show()
+                }else{
+                    VideoPlayerManager.destroyVideoPlayer()
                 }
             }
 

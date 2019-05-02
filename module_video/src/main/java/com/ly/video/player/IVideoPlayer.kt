@@ -1,6 +1,7 @@
 package com.ly.video.player
 
 import android.net.Uri
+import android.view.Surface
 import android.view.SurfaceHolder
 import com.ly.video.render.IRenderView
 import tv.danmaku.ijk.media.player.IMediaPlayer
@@ -37,6 +38,11 @@ interface IVideoPlayer {
      * 设置显示画面的[SurfaceHolder]
      */
     fun setDisplay(holder: SurfaceHolder?)
+
+    /**
+     * 设置显示画面的[Surface]
+     */
+    fun setSurface(surface: Surface?)
 
     /**视频准备好后,回调OnPreparedListener接口中的 onPrepared方法*/
     fun prepareAsync()
@@ -99,6 +105,12 @@ interface IVideoPlayer {
      * @return 返回播放状态
      */
     fun getPlayStatus(): Int
+
+    /**
+     * 是否可以截图
+     * @return true,能截图;false,不能
+     */
+    fun isCanCapture(): Boolean
 
     /**
      * 捕获视频中当前帧画面(截图)
