@@ -1,23 +1,28 @@
 package com.ly.video.player
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
+import android.os.Environment
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.ly.pub.PUBLIC_APPLICATION
+import com.ly.pub.util.saveBitmap
 import com.ly.video.R
 import com.ly.video.millisecondToHMS
 import kotlinx.android.synthetic.main.video_layout_player.view.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
+import java.util.*
 
 /**
  * Created by LanYang on 2019/3/15
  * 默认实现的视频播放控件
  */
-class LYVideoView : BaseVideoView {
+class LYVideoView : BaseVideoView, ICaptureFrame {
 
     constructor(context: Context) : super(context)
 
@@ -78,7 +83,7 @@ class LYVideoView : BaseVideoView {
             }
         }
         mMoreFunc.setOnClickListener {
-            VideoPlayerManager.getIVideoPlayer().captureFrame()
+            VideoPlayerManager.getIVideoPlayer().captureFrame(this)
         }
     }
 
@@ -131,5 +136,12 @@ class LYVideoView : BaseVideoView {
     override fun changeCurrentPosition(currentPosition: Long, duration: Long) {
         mCurrent.text = millisecondToHMS(currentPosition)
         mSeekbar.progress = (currentPosition.toFloat() / duration * 100).toInt()
+    }
+
+    override fun captureSuccess(bitmap: Bitmap) {
+        val path =
+            Environment.getExternalStorageDirectory().path + "/DCIM/${PUBLIC_APPLICATION.packageName}"
+        val name = "${Date().time}.png"
+        saveBitmap(bitmap, path, name)
     }
 }

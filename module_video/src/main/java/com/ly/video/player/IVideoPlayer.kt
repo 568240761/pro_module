@@ -1,8 +1,10 @@
 package com.ly.video.player
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.Surface
 import android.view.SurfaceHolder
+import androidx.annotation.WorkerThread
 import com.ly.video.render.IRenderView
 import tv.danmaku.ijk.media.player.IMediaPlayer
 
@@ -115,7 +117,7 @@ interface IVideoPlayer {
     /**
      * 捕获视频中当前帧画面(截图)
      */
-    fun captureFrame()
+    fun captureFrame(capture: ICaptureFrame)
 
     /**
      * 捕获视频中多张帧画面(GIF)
@@ -156,4 +158,12 @@ interface IChangeUIListener {
      * 视频暂停回调
      */
     fun pauseCauseUI()
+}
+
+interface ICaptureFrame {
+    /**
+     * 截图成功
+     * @param bitmap 位图
+     */
+    fun captureSuccess(bitmap: Bitmap)
 }

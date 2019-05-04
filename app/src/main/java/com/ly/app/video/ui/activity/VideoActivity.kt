@@ -39,4 +39,9 @@ class VideoActivity : PubActivity() {
             showToast(R.string.toast_video_error)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LogUtil_d("video","onDestroy")
+    }
 }

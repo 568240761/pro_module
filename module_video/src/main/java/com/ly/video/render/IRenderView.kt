@@ -1,6 +1,6 @@
 package com.ly.video.render
 
-import android.graphics.Bitmap
+import com.ly.video.player.ICaptureFrame
 
 
 /**
@@ -11,5 +11,5 @@ interface IRenderView {
 
     fun setVideoSize(videoWidth: Int, videoHeight: Int)
 
-    fun captureFrame(){}
+    fun captureFrame(capture: ICaptureFrame) {}
 }

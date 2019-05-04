@@ -165,9 +165,9 @@ class BaseVideoPlayer : IVideoPlayer {
         return this::mRenderView.isInitialized && mRenderView is TextureView
     }
 
-    override fun captureFrame() {
+    override fun captureFrame(capture: ICaptureFrame) {
         if (isCanCapture()) {
-            mRenderView.captureFrame()
+            mRenderView.captureFrame(capture)
         }
     }
 

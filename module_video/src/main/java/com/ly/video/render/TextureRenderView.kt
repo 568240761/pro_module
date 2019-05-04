@@ -4,17 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.os.Build
-import android.os.Environment
 import android.util.AttributeSet
 import android.view.Surface
 import android.view.TextureView
 import androidx.annotation.RequiresApi
-import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
-import com.ly.pub.util.saveBitmap
 import com.ly.video.VideoMeasureUtil
+import com.ly.video.player.ICaptureFrame
 import com.ly.video.player.VideoPlayerManager
-import java.util.*
 
 /**
  * Created by LanYang on 2019/5/2
@@ -49,14 +46,11 @@ class TextureRenderView : TextureView, TextureView.SurfaceTextureListener, IRend
         surfaceTextureListener = this
     }
 
-    override fun captureFrame() {
+    override fun captureFrame(capture: ICaptureFrame) {
         Thread {
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val frame = getBitmap(bitmap)
-            val path =
-                Environment.getExternalStorageDirectory().path + "/DCIM/${PUBLIC_APPLICATION.packageName}"
-            val name = "${Date().time}.png"
-            saveBitmap(frame, path, name)
+            capture.captureSuccess(frame)
         }.start()
     }
 
