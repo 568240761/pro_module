@@ -4,20 +4,30 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.os.Build
+import android.os.Environment
 import android.util.AttributeSet
 import android.view.Surface
 import android.view.TextureView
 import androidx.annotation.RequiresApi
+import com.ly.gif.generateGif
+import com.ly.pub.PUBLIC_APPLICATION
+import com.ly.pub.time.PubCountDownTimer
 import com.ly.pub.util.LogUtil_d
+import com.ly.pub.util.showToast
 import com.ly.video.VideoMeasureUtil
 import com.ly.video.player.ICaptureFrame
 import com.ly.video.player.VideoPlayerManager
+import java.util.*
 
 /**
  * Created by LanYang on 2019/5/2
  */
 class TextureRenderView : TextureView, TextureView.SurfaceTextureListener, IRenderView {
     private lateinit var mVideoMeasureUtil: VideoMeasureUtil
+
+    private val mBitmapList = ArrayList<Bitmap>()
+
+    private var count=0
 
     constructor(context: Context?) : super(context) {
         initView()
@@ -47,11 +57,43 @@ class TextureRenderView : TextureView, TextureView.SurfaceTextureListener, IRend
     }
 
     override fun captureFrame(capture: ICaptureFrame) {
-        Thread {
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val frame = getBitmap(bitmap)
-            capture.captureSuccess(frame)
-        }.start()
+//        Thread {
+//            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+//            val frame = getBitmap(bitmap)
+//            capture.captureSuccess(frame)
+//        }.start()
+
+        val countDownTimer = PubCountDownTimer(5000L, 16L)
+        countDownTimer.start(
+            tick = { _: Long ->
+                Thread {
+                    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444)
+                    val frame = getBitmap(bitmap)
+                    mBitmapList.add(frame)
+                    count+=1
+                    LogUtil_d("GIF","count=$count")
+                }.start()
+            },
+            finish = {
+                Thread {
+                    val path =
+                        Environment.getExternalStorageDirectory().path + "/DCIM/${PUBLIC_APPLICATION.packageName}/"
+
+                    val name = "$path${Date().time}.gif"
+                    generateGif(
+                        mBitmapList,
+                        name,
+                        fps=60f,
+                        failure = {
+                            mBitmapList.clear()
+                            post { showToast("GIF文件生成失败") }
+                        },
+                        success = {
+                            mBitmapList.clear()
+                            post { showToast("GIF文件生成成功") }
+                        })
+                }.start()
+            })
     }
 
     override fun setVideoSize(videoWidth: Int, videoHeight: Int) {
