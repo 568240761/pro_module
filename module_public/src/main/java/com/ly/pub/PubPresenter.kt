@@ -8,45 +8,37 @@ import com.ly.pub.util.LogUtil_d
 
 /**
  * Created by LanYang on 2018/8/6
- * MVP模式中的PRESENTER类都需要继承该类
  * 实现DefaultLifecycleObserver类,对Activity与Fragment生命周期进行观察;
  * 销毁时,会自动回调releaseResource()
  */
-abstract class PubPresenter<T> : DefaultLifecycleObserver {
-    private var mView: T? = null
-    protected var activity: Activity? = null
+abstract class PubPresenter : DefaultLifecycleObserver {
+    private lateinit var mLifecycleOwner: LifecycleOwner
+    protected lateinit var activity: Activity
 
-    fun attachView(view: T, paramsActivity: Activity? = null) {
-        if (view !is PubView)
-            throw IllegalArgumentException("泛型的父类必须为PubView！！！")
-        mView = view
+    open fun attachView(any: Any, paramsActivity: Activity? = null) {
         when {
-            mView is Activity -> activity = mView as Activity
-            mView is Fragment -> activity = (mView as Fragment).activity as Activity
+            any is Activity -> activity = any
+            any is Fragment -> any.activity?.let { activity = it }
             paramsActivity != null -> activity = paramsActivity
         }
-        if (mView is LifecycleOwner) {
-            (mView as LifecycleOwner).lifecycle.addObserver(this)
-        }
+
+        if (any is LifecycleOwner)
+            mLifecycleOwner = any
+        else
+            paramsActivity?.let {
+                if (paramsActivity is LifecycleOwner)
+                    mLifecycleOwner = paramsActivity
+            }
+
+        if (this::mLifecycleOwner.isInitialized)
+            mLifecycleOwner.lifecycle.addObserver(this)
     }
 
     /**
-     * 当mView实例不为Activity或Fragment时,需要手动调用该方法
+     * 当mView实例不为Activity或Fragment时,必要时可以手动调用该方法
      */
     fun detachView() {
         releaseResource()
-        mView = null
-    }
-
-    private fun isViewAttached(): Boolean {
-        return mView != null
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun getMvpView(): T {
-        if (!isViewAttached())
-            throw IllegalArgumentException("请先调用attachView方法！！！")
-        return mView as T
     }
 
     /**
@@ -57,8 +49,8 @@ abstract class PubPresenter<T> : DefaultLifecycleObserver {
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        (mView as LifecycleOwner).lifecycle.removeObserver(this)
         LogUtil_d(this.javaClass.simpleName, "${this.javaClass.simpleName}-onDestroy")
+        mLifecycleOwner.lifecycle.removeObserver(this)
         releaseResource()
     }
 }

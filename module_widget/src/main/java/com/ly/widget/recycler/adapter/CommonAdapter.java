@@ -2,7 +2,6 @@ package com.ly.widget.recycler.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import com.ly.pub.PubImageLoader;
 import com.ly.widget.recycler.base.ItemViewDelegate;
 import com.ly.widget.recycler.base.ViewHolder;
 
@@ -15,8 +14,8 @@ public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T> {
     protected int mLayoutId;
     protected LayoutInflater mInflater;
 
-    public CommonAdapter(final Context context, final int layoutId, PubImageLoader imageLoader, List<T> datas) {
-        super(context, datas,imageLoader);
+    public CommonAdapter(final Context context, final int layoutId, List<T> datas) {
+        super(context, datas);
         mInflater = LayoutInflater.from(context);
         mLayoutId = layoutId;
 

@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -15,48 +14,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.*;
-import androidx.annotation.DrawableRes;
 import androidx.recyclerview.widget.RecyclerView;
-import com.ly.pub.PubImageLoader;
-import com.ly.widget.R;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews;
     private View mConvertView;
     private Context context;
-    private RecyclerView mRecyclerView;
-    private ImageView mImageView;
-    private String mImageUrl;
-    private PubImageLoader mImageLoader;
-    private int mPlaceholder = R.drawable.pub_image_placeholder;
-    /**
-     * 是否完成加载图片
-     */
-    private boolean mIsLoadCompleted;
 
-    public ViewHolder(View itemView, RecyclerView recyclerView, PubImageLoader imageLoader) {
+    public ViewHolder(View itemView) {
         super(itemView);
         context = itemView.getContext();
         mConvertView = itemView;
         mViews = new SparseArray<View>();
-        mRecyclerView = recyclerView;
-        mImageLoader = imageLoader;
     }
 
     public static ViewHolder createViewHolder(View itemView) {
-        ViewHolder holder = new ViewHolder(itemView, null, null);
-        return holder;
+        return new ViewHolder(itemView);
     }
 
     public static ViewHolder createViewHolder(Context context,
                                               ViewGroup parent,
-                                              int layoutId,
-                                              RecyclerView recyclerView,
-                                              PubImageLoader imageLoader) {
-        View itemView = LayoutInflater.from(context).inflate(layoutId, parent,
-                false);
-        ViewHolder holder = new ViewHolder(itemView, recyclerView, imageLoader);
-        return holder;
+                                              int layoutId) {
+        View itemView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+        return new ViewHolder(itemView);
     }
 
 
@@ -75,37 +55,21 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
 
     /****以下为辅助方法*****/
-
-    public ViewHolder initImageData(int viewId, String url) {
-        return initImageData(viewId, url, R.drawable.pub_image_placeholder);
-    }
-
-    public ViewHolder initImageData(int viewId, String url, @DrawableRes int placeholder) {
-        mPlaceholder = placeholder;
-        mImageView = getView(viewId);
-        mImageUrl = url;
-        mIsLoadCompleted = false;
-        if (mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-            loadImage();
-        } else {
-            mImageView.setImageResource(placeholder);
-        }
-
-        return this;
-    }
-
-    public ViewHolder loadImage() {
-        if (mImageView == null || TextUtils.isEmpty(mImageUrl) || mIsLoadCompleted) {
-            return this;
-        }
-        mImageLoader.showImage(mImageView.getContext(), mImageView, mImageUrl, mPlaceholder, mPlaceholder);
-        mIsLoadCompleted = true;
-        return this;
-    }
-
     public ViewHolder setText(int viewId, String text) {
         TextView tv = getView(viewId);
         tv.setText(text);
+        return this;
+    }
+
+    public ViewHolder setTextColor(int viewId, int textColor) {
+        TextView view = getView(viewId);
+        view.setTextColor(textColor);
+        return this;
+    }
+
+    public ViewHolder setTextColorRes(int viewId, int textColorRes) {
+        TextView view = getView(viewId);
+        view.setTextColor(context.getResources().getColor(textColorRes));
         return this;
     }
 
@@ -139,18 +103,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public ViewHolder setTextColor(int viewId, int textColor) {
-        TextView view = getView(viewId);
-        view.setTextColor(textColor);
-        return this;
-    }
-
-    public ViewHolder setTextColorRes(int viewId, int textColorRes) {
-        TextView view = getView(viewId);
-        view.setTextColor(context.getResources().getColor(textColorRes));
-        return this;
-    }
-
     @SuppressLint("NewApi")
     public ViewHolder setAlpha(int viewId, float value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -174,24 +126,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     public ViewHolder setInvisible(int viewId, boolean visible) {
         View view = getView(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
-        return this;
-    }
-
-    /**
-     * 为文本设置超链接
-     */
-    public ViewHolder linkify(int viewId) {
-        TextView view = getView(viewId);
-        Linkify.addLinks(view, Linkify.ALL);
-        return this;
-    }
-
-    public ViewHolder setTypeface(Typeface typeface, int... viewIds) {
-        for (int viewId : viewIds) {
-            TextView view = getView(viewId);
-            view.setTypeface(typeface);
-            view.setPaintFlags(view.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
-        }
         return this;
     }
 

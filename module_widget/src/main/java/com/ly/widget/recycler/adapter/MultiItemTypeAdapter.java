@@ -21,13 +21,10 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected Context mContext;
     protected List<T> mDatas;
     protected ItemViewDelegateManager mItemViewDelegateManager;
-    protected RecyclerView mRecyclerView;
-    protected PubImageLoader mImageLoader;
 
-    public MultiItemTypeAdapter(Context context, List<T> datas, PubImageLoader imageLoader) {
+    public MultiItemTypeAdapter(Context context, List<T> datas) {
         mContext = context;
         mDatas = datas;
-        mImageLoader = imageLoader;
         mItemViewDelegateManager = new ItemViewDelegateManager();
     }
 
@@ -42,7 +39,7 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemViewDelegate itemViewDelegate = mItemViewDelegateManager.getItemViewDelegate(viewType);
         int layoutId = itemViewDelegate.getItemViewLayoutId();
-        ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId, mRecyclerView, mImageLoader);
+        ViewHolder holder = ViewHolder.createViewHolder(mContext, parent, layoutId);
         return holder;
     }
 
@@ -59,28 +56,6 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public int getItemCount() {
         int itemCount = mDatas.size();
         return itemCount;
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        if (mRecyclerView == null) {
-            mRecyclerView = recyclerView;
-            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-                        for (int i = 0; i < manager.getChildCount(); i++) {
-                            View view = manager.getChildAt(i);
-                            ViewHolder viewHolder = (ViewHolder) recyclerView.getChildViewHolder(view);
-                            viewHolder.loadImage();
-                        }
-                    }
-                }
-            });
-        }
     }
 
     public List<T> getDatas() {

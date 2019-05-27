@@ -1,1 +1,1 @@
-include ':app', ':module_public', ':module_image', ':module_network', ':module_widget', ':module_video', ':module_gif'
+include ':module_public', ':module_image', ':module_network', ':module_widget', ':module_video', ':module_gif'
