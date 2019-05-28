@@ -1,4 +1,4 @@
-package com.ly.video.player
+package com.ly.vidoetest.player
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.saveBitmap
-import com.ly.video.R
-import com.ly.video.millisecondToHMS
+import com.ly.vidoetest.R
+import com.ly.vidoetest.millisecondToHMS
 import kotlinx.android.synthetic.main.video_layout_player.view.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import java.util.*

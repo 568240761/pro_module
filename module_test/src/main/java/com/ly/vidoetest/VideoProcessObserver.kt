@@ -1,10 +1,10 @@
-package com.ly.video
+package com.ly.vidoetest
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_e
-import com.ly.video.player.VideoPlayerManager
+import com.ly.vidoetest.player.VideoPlayerManager
 
 
 /**

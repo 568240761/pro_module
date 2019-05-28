@@ -1,11 +1,11 @@
-package com.ly.video.hover
+package com.ly.vidoetest.hover
 
 import android.view.Gravity
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.getAllSuperClass
 import com.ly.pub.util.retActionBarHeight
 import com.ly.pub.util.retStatusHeight
-import com.ly.video.player.VideoPlayerManager
+import com.ly.vidoetest.player.VideoPlayerManager
 
 /**
  * Created by LanYang on 2019/3/27

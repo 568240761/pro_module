@@ -1,4 +1,4 @@
-package com.ly.video.render
+package com.ly.vidoetest.render
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,9 +14,9 @@ import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.time.PubCountDownTimer
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.showToast
-import com.ly.video.VideoMeasureUtil
-import com.ly.video.player.ICaptureFrame
-import com.ly.video.player.VideoPlayerManager
+import com.ly.vidoetest.VideoMeasureUtil
+import com.ly.vidoetest.player.ICaptureFrame
+import com.ly.vidoetest.player.VideoPlayerManager
 import java.util.*
 
 /**

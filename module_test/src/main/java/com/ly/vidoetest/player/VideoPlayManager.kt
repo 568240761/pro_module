@@ -1,7 +1,7 @@
-package com.ly.video.player
+package com.ly.vidoetest.player
 
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.ly.video.VideoProcessObserver
+import com.ly.vidoetest.VideoProcessObserver
 
 /**
  * Created by LanYang on 2019/3/28

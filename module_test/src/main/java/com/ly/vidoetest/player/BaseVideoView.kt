@@ -1,4 +1,4 @@
-package com.ly.video.player
+package com.ly.vidoetest.player
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,12 +15,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ly.pub.util.LogUtil_d
-import com.ly.video.HoverCallback
-import com.ly.video.checkHoverPermission
-import com.ly.video.hover.HoverManager
-import com.ly.video.hover.HoverOption
-import com.ly.video.render.IRenderView
-import com.ly.video.render.TextureRenderView
+import com.ly.vidoetest.HoverCallback
+import com.ly.vidoetest.checkHoverPermission
+import com.ly.vidoetest.hover.HoverManager
+import com.ly.vidoetest.hover.HoverOption
+import com.ly.vidoetest.render.IRenderView
+import com.ly.vidoetest.render.TextureRenderView
 
 /**
  * Created by LanYang on 2019/3/30

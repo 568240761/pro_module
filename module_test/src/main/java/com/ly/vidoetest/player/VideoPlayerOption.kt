@@ -1,7 +1,7 @@
-package com.ly.video.player
+package com.ly.vidoetest.player
 
 import android.net.Uri
-import com.ly.video.render.IRenderView
+import com.ly.vidoetest.render.IRenderView
 
 /**
  * Created by LanYang on 2019/3/28

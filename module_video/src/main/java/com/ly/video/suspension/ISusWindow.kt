@@ -1,13 +1,13 @@
-package com.ly.video.hover
-
+package com.ly.video.suspension
 
 /**
- * Created by LanYang on 2019/3/27
+ * Created by LanYang on 2019/5/28
  */
-interface IHover {
+interface ISusWindow {
 
     /**
      * 设置悬浮窗口大小
+     *
      * @param width 窗口的宽
      * @param height 窗口的高
      */
@@ -15,7 +15,8 @@ interface IHover {
 
     /**
      * 设置悬浮窗口出现的位置
-     * @param gravity 值为[Gravity]中的TOP,BOTTOM,LEFT,RIGHT等
+     *
+     * @param gravity 值为[android.view.Gravity]中的TOP,BOTTOM,LEFT,RIGHT等
      * @param xOffset 横坐标相对位移
      * @param yOffset 纵坐标相对位移
      */
@@ -23,12 +24,14 @@ interface IHover {
 
     /**
      * 设置悬浮窗口是否可以移动
+     *
      * @param canMove true,可以移动;false,不可以移动
      */
     fun setCanMove(canMove: Boolean)
 
     /**
      * 更新悬浮窗口位置
+     *
      * @param x 横坐标相对位移
      * @param y 纵坐标相对位移
      */

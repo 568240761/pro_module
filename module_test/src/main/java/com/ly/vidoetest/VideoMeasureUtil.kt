@@ -1,4 +1,4 @@
-package com.ly.video
+package com.ly.vidoetest
 
 import android.view.View
 import com.ly.pub.util.LogUtil_d

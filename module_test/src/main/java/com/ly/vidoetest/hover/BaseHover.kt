@@ -1,4 +1,4 @@
-package com.ly.video.hover
+package com.ly.vidoetest.hover
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,8 +11,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
-import com.ly.video.render.IRenderView
-import com.ly.video.render.SurfaceRenderView
+import com.ly.vidoetest.render.IRenderView
+import com.ly.vidoetest.render.SurfaceRenderView
 
 /**
  * Created by LanYang on 2019/3/27

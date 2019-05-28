@@ -1,4 +1,4 @@
-package com.ly.video.player
+package com.ly.vidoetest.player
 
 import android.media.AudioManager
 import android.net.Uri
@@ -8,8 +8,8 @@ import android.view.TextureView
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_i
-import com.ly.video.render.IRenderView
-import com.ly.video.service.VideoPlayerService
+import com.ly.vidoetest.render.IRenderView
+import com.ly.vidoetest.service.VideoPlayerService
 import tv.danmaku.ijk.media.player.AbstractMediaPlayer
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer

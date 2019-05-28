@@ -1,4 +1,4 @@
-package com.ly.video.service
+package com.ly.vidoetest.service
 
 import android.app.Service
 import android.content.Context

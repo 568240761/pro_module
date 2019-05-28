@@ -1,16 +1,14 @@
-package com.ly.video.render
+package com.ly.vidoetest.render
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.view.View
 import androidx.annotation.RequiresApi
 import com.ly.pub.util.LogUtil_d
-import com.ly.video.VideoMeasureUtil
-import com.ly.video.player.VideoPlayerManager
+import com.ly.vidoetest.VideoMeasureUtil
+import com.ly.vidoetest.player.VideoPlayerManager
 
 /**
  * Created by LanYang on 2019/3/4

@@ -1,12 +1,12 @@
-package com.ly.video.hover
+package com.ly.vidoetest.hover
 
 import android.view.View
 import android.widget.ImageView
-import com.ly.video.R
-import com.ly.video.player.IChangeUIListener
-import com.ly.video.player.STATE_COMPLETED
-import com.ly.video.player.STATE_PREPARED
-import com.ly.video.player.VideoPlayerManager
+import com.ly.vidoetest.R
+import com.ly.vidoetest.player.IChangeUIListener
+import com.ly.vidoetest.player.STATE_COMPLETED
+import com.ly.vidoetest.player.STATE_PREPARED
+import com.ly.vidoetest.player.VideoPlayerManager
 import tv.danmaku.ijk.media.player.IMediaPlayer
 
 /**
