@@ -20,6 +20,7 @@ import java.util.*
 
 /**
  * Created by LanYang on 2019/3/15
+ *
  * 默认实现的视频播放控件
  */
 class LYVideoView : BaseVideoView, ICaptureFrame {

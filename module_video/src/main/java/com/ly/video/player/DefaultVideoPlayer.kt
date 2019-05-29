@@ -6,14 +6,17 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
+import com.ly.video.annotation.*
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import tv.danmaku.ijk.media.player.IjkTimedText
 
 /**
  * Created by LanYang on 2019/5/28
+ *
+ * 基于开源项目(https://github.com/bilibili/ijkplayer)实现的视频播放器
  */
-class DefaultVideoPlayer : IVideoPlayer {
+internal class DefaultVideoPlayer : IVideoPlayer {
 
     @VideoStatus
     private var mCurrentState = STATE_IDLE

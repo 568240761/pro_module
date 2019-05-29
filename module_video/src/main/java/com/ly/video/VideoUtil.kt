@@ -3,6 +3,7 @@ package com.ly.video
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -12,6 +13,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ly.pub.util.LogUtil_d
 import com.ly.pub.util.LogUtil_e
+import com.ly.pub.util.getAllSuperClass
+import com.ly.video.suspension.ISusWindow
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,6 +47,34 @@ fun Long.millisecondToHMS(): String {
     return str
 }
 
+/**
+ * 检查该类是否为ISusWindow的子类;
+ *
+ * 是ISusWindow的子类,返回true;否则,返回false
+ */
+fun Class<*>.checkSusWindow(): Boolean {
+    val list = getAllSuperClass(this)
+    for (index in list.indices) {
+        LogUtil_d("Class<*>.checkSusWindow", "superClass=${list[index].name}")
+
+        if (list[index].name == ISusWindow::class.java.name) break
+
+        if (index + 1 == list.size) return false
+    }
+
+    return true
+}
+
+/**
+ * 返回截取图片质量参数
+ */
+fun Int.getCaptureConfig(): Bitmap.Config {
+    return when (this) {
+        0 -> Bitmap.Config.ALPHA_8
+        1 -> Bitmap.Config.RGB_565
+        else -> Bitmap.Config.ARGB_8888
+    }
+}
 
 /**
  * 检查悬浮权限(Android版本大于23)

@@ -1,9 +1,11 @@
-package com.ly.video.player
+package com.ly.video.annotation
 
 import androidx.annotation.IntDef
 
 /**
  * Created by LanYang on 2019/5/28
+ *
+ * 关于播放状态常量
  */
 
 const val STATE_ERROR = -1

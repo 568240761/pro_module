@@ -17,7 +17,6 @@ fun initSharedPre() {
     mEditor = mSharedPre.edit()
 }
 
-
 fun getSharedPreString(key: String, defaultValue: String): String {
     val value = mSharedPre.getString(key, defaultValue)
     return value ?: ""

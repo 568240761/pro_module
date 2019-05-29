@@ -3,9 +3,12 @@ package com.ly.video.player
 import android.net.Uri
 import android.view.Surface
 import android.view.SurfaceHolder
+import com.ly.video.annotation.VideoStatus
 
 /**
  * Created by LanYang on 2019/5/28
+ *
+ * 关于音频控制接口
  */
 interface IVideoPlayer {
 
@@ -14,7 +17,7 @@ interface IVideoPlayer {
      *
      * @param isDebug 是否为开发状态;为true,显示播放log日志
      */
-    fun setDebug(isDebug: Boolean)
+    fun setDebug(isDebug: Boolean = false)
 
     /**
      * 设置视频URI

@@ -6,6 +6,7 @@ import java.io.File
 
 /**
  * Created by LanYang on 2019/3/1
+ *
  * 关于渲染视频画面的接口
  */
 interface IRenderView {
