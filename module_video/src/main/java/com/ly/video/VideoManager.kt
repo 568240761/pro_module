@@ -1,6 +1,7 @@
 package com.ly.video
 
 import android.content.Context
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.video.annotation.CAPTURE_CONFIG_MID
 import com.ly.video.annotation.CaptureConfig
@@ -18,13 +19,24 @@ import com.ly.video.suspension.DefaultSusWindow
 object VideoManager {
 
     val videoPlayer: IVideoPlayer by lazy {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(VideoProcessObserver())
         DefaultVideoPlayer()
     }
 
     private val mSharedPre = VideoSharedPre()
 
+    /**是否自动跟踪生命周期,默认true;
+     * 比如直接从播放视频页面回到桌面,视频自动停止播放;返回又自动开始播放
+     *
+     * 当[mIsShowSusWindow]为true时,该属性失效
+     */
+    private var mIsTrackLifecycle: Boolean
+
     /**是否显示悬浮窗口;默认true,显示窗口*/
     private var mIsShowSusWindow: Boolean
+
+    /**当前屏幕的宽/悬浮窗口宽;默认为2,即(当前屏幕的宽:悬浮窗口宽=2:1)*/
+    private var mSusWindowWidthFactor: Int
 
     /**悬浮窗口出现位置横坐标相对位移*/
     private var mSusWindowX: Int
@@ -51,7 +63,9 @@ object VideoManager {
     private var mGifFps: Int
 
     init {
+        mIsTrackLifecycle = mSharedPre.getSharedPreBoolean(VIDEO_PARAMS_IS_TRACK_LIFECYCLE, true)
         mIsShowSusWindow = mSharedPre.getSharedPreBoolean(VIDEO_PARAMS_SHOW_SUS_WINDOW, true)
+        mSusWindowWidthFactor = mSharedPre.getSharedPreInt(VIDEO_PARAMS_SUS_WINDOW_WIDTH_FACTOR, 2)
         mSusWindowX = mSharedPre.getSharedPreInt(VIDEO_PARAMS_SUS_WINDOW_X, 0)
         mSusWindowY = mSharedPre.getSharedPreInt(VIDEO_PARAMS_SUS_WINDOW_Y, 0)
         mSusWindowMove = mSharedPre.getSharedPreBoolean(VIDEO_PARAMS_SUS_WINDOW_MOVE, true)
@@ -75,6 +89,14 @@ object VideoManager {
     fun isDebug() = mIsDebug
 
 
+    fun setTrackLifecycle(flag: Boolean): VideoManager {
+        mIsTrackLifecycle = flag
+        mSharedPre.putSharedPreBoolean(VIDEO_PARAMS_IS_TRACK_LIFECYCLE, flag)
+        return this
+    }
+
+    fun isTrackLifecycle() = mIsTrackLifecycle
+
     fun setShowSusWindow(flag: Boolean): VideoManager {
         mIsShowSusWindow = flag
         mSharedPre.putSharedPreBoolean(VIDEO_PARAMS_SHOW_SUS_WINDOW, flag)
@@ -82,6 +104,15 @@ object VideoManager {
     }
 
     fun isShowSusWindow() = mIsShowSusWindow
+
+
+    fun setSusWindowWidthFactor(factor: Int): VideoManager {
+        mSusWindowWidthFactor = factor
+        mSharedPre.putSharedPreInt(VIDEO_PARAMS_SUS_WINDOW_WIDTH_FACTOR, factor)
+        return this
+    }
+
+    fun getSusWindowWidthFactor() = mSusWindowWidthFactor
 
 
     fun setSusWindowX(x: Int): VideoManager {
@@ -149,6 +180,7 @@ object VideoManager {
         mSharedPre.putSharedPreLong(VIDEO_PARAMS_GIF_TOTAL_TIME, time)
         return this
     }
+
     fun getGifTotalTime() = mGifTotalTime
 
 
@@ -162,7 +194,11 @@ object VideoManager {
     fun getGifFps() = mGifFps
 }
 
+const val VIDEO_PARAMS_IS_TRACK_LIFECYCLE = "is_track_lifecycle"
+
 const val VIDEO_PARAMS_SHOW_SUS_WINDOW = "show_sus_window"
+
+const val VIDEO_PARAMS_SUS_WINDOW_WIDTH_FACTOR = "sus_window_width_factor"
 
 const val VIDEO_PARAMS_SUS_WINDOW_X = "sus_window_x"
 

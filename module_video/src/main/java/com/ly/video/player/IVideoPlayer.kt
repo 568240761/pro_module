@@ -48,7 +48,7 @@ interface IVideoPlayer {
      * @param error 视频播放出现错误时,会调用的函数类型参数
      */
     fun prepareAsync(
-        prepared: () -> Unit = {},
+        prepared: (width: Int, height: Int) -> Unit,
         completion: () -> Unit = {},
         error: (msg: String) -> Unit = {}
     )
@@ -62,37 +62,32 @@ interface IVideoPlayer {
     /**
      * 播放
      *
-     * @param other 函数类型;视频播放后,UI或其他操作
      */
-    fun start(other: () -> Unit = {})
+    fun start()
 
     /**
      * 暂停
      *
-     * @param other 函数类型;视频暂停后,UI或其他操作
      */
-    fun pause(other: () -> Unit = {})
+    fun pause()
 
     /**
      * 停止
      *
-     * @param other 函数类型;视频暂停后,UI或其他操作
      */
-    fun stop(other: () -> Unit = {})
+    fun stop()
 
     /**
      * 释放资源
      *
-     * @param other 函数类型;释放资源后,UI或其他操作
      */
-    fun release(other: () -> Unit = {})
+    fun release()
 
     /**
      * 销毁
      *
-     * @param other 函数类型;视频销毁后,UI或其他操作
      */
-    fun destroy(other: () -> Unit = {})
+    fun destroy()
 
     /**
      * 获取视频时长
@@ -134,7 +129,9 @@ interface IVideoPlayer {
     @VideoStatus
     fun getPlayStatus(): Int
 
-    fun setOnPreparedListener(listener: () -> Unit = {})
+    fun setUIOperatorListener(listener: IUIOperatorListener?)
+
+    fun setOnPreparedListener(listener: (width: Int, height: Int) -> Unit)
 
     fun setOnCompletionListener(listener: () -> Unit = {})
 
@@ -149,4 +146,21 @@ interface IVideoPlayer {
     fun setOnInfoListener(listener: (what: Int, extra: Int) -> Unit)
 
     fun setOnTimedTextListener(listener: (text: TimedText) -> Unit)
+
+    fun clearAllListener()
+
+    /**
+     * 响应视频播放开始或停止,UI变化的回调接口
+     */
+    interface IUIOperatorListener {
+        fun start()
+
+        fun pause()
+
+        fun stop()
+
+        fun release()
+
+        fun destroy()
+    }
 }

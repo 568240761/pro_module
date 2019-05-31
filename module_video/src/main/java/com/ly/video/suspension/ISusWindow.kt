@@ -8,14 +8,6 @@ package com.ly.video.suspension
 interface ISusWindow {
 
     /**
-     * 设置悬浮窗口大小;推荐宽高比与视频的宽高比相同
-     *
-     * @param width 窗口的宽
-     * @param height 窗口的高
-     */
-    fun setSize(width: Int, height: Int)
-
-    /**
      * 设置悬浮窗口出现的位置
      *
      * @param xOffset 横坐标相对位移

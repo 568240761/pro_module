@@ -8,8 +8,18 @@ import android.view.*
 import android.widget.FrameLayout
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
+import com.ly.pub.util.retScreenWidthPx
+import com.ly.video.VideoManager
 import com.ly.video.render.IRenderView
 import com.ly.video.render.SurfaceRenderView
+
+/**显示悬浮窗口*/
+fun showSusWindow() {
+    val susWindow = VideoManager.getSusWindowUI().newInstance() as AbstractSusWindow
+    susWindow.setGravity(VideoManager.getSusWindowX(), VideoManager.getSusWindowY())
+    susWindow.setCanMove(VideoManager.isSusWindowMove())
+    susWindow.show()
+}
 
 /**
  * Created by LanYang on 2019/3/27
@@ -37,18 +47,22 @@ abstract class AbstractSusWindow : ISusWindow {
         }
         mLayoutParams.type = type
         mLayoutParams.flags =
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         mLayoutParams.windowAnimations = 0
         mLayoutParams.format = PixelFormat.RGBA_8888
+
+        setSize()
     }
 
     private fun setContentView() {
-        mView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        mView.layoutParams =
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         val surfaceRenderView = SurfaceRenderView(PUBLIC_APPLICATION)
         surfaceRenderView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT)
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
         mView.addView(surfaceRenderView)
         mRenderView = surfaceRenderView
 
@@ -61,10 +75,13 @@ abstract class AbstractSusWindow : ISusWindow {
 
     protected abstract fun initView(view: View)
 
-    override fun setSize(width: Int, height: Int) {
-        mLayoutParams.width = width
-        mLayoutParams.height = height
-        mRenderView.setRenderViewSize(width, height)
+    private fun setSize() {
+        mLayoutParams.width = retScreenWidthPx() / VideoManager.getSusWindowWidthFactor()
+
+        val factor = VideoManager.videoPlayer.getWidth().toFloat() / VideoManager.videoPlayer.getHeight()
+        mLayoutParams.height = (mLayoutParams.width / factor).toInt()
+
+        mRenderView.setRenderViewSize(mLayoutParams.width, mLayoutParams.height)
     }
 
     override fun setGravity(xOffset: Int, yOffset: Int) {

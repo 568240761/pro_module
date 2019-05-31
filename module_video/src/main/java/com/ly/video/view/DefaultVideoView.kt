@@ -53,7 +53,6 @@ class DefaultVideoView : AbstractVideoView{
     /**视频总时长*/
     private lateinit var mDuration: TextView
 
-
     override fun getLayoutId(): Int {
         return R.layout.video_layout_default_video_view
     }

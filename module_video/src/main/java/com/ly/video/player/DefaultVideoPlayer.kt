@@ -7,6 +7,7 @@ import android.view.SurfaceHolder
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
 import com.ly.video.annotation.*
+import tv.danmaku.ijk.media.player.AbstractMediaPlayer
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import tv.danmaku.ijk.media.player.IjkTimedText
@@ -22,6 +23,8 @@ internal class DefaultVideoPlayer : IVideoPlayer {
     private var mCurrentState = STATE_IDLE
 
     private val mMediaPlayer: IMediaPlayer = IjkMediaPlayer()
+
+    private var mUiOperator: IVideoPlayer.IUIOperatorListener? = null
 
     init {
         IjkMediaPlayer.native_profileBegin("libijkplayer.so")
@@ -60,11 +63,15 @@ internal class DefaultVideoPlayer : IVideoPlayer {
         mMediaPlayer.setSurface(surface)
     }
 
-    override fun prepareAsync(prepared: () -> Unit, completion: () -> Unit, error: (msg: String) -> Unit) {
+    override fun prepareAsync(
+        prepared: (width: Int, height: Int) -> Unit,
+        completion: () -> Unit,
+        error: (msg: String) -> Unit
+    ) {
         mMediaPlayer.prepareAsync()
         mCurrentState = STATE_PREPARING
 
-        setOnCompletionListener(prepared)
+        setOnPreparedListener(prepared)
         setOnCompletionListener(completion)
         setOnErrorListener(error)
     }
@@ -77,52 +84,52 @@ internal class DefaultVideoPlayer : IVideoPlayer {
         return if (isPreparedState()) mMediaPlayer.videoHeight else 0
     }
 
-    override fun start(other: () -> Unit) {
+    override fun start() {
         if (isPreparedState()) {
             LogUtil_d(this.javaClass.simpleName, "start")
 
             mMediaPlayer.start()
             mCurrentState = STATE_PLAYING
 
-            other()
+            mUiOperator?.start()
         }
     }
 
-    override fun pause(other: () -> Unit) {
+    override fun pause() {
         if (isPlaying()) {
             LogUtil_d(this.javaClass.simpleName, "pause")
 
             mMediaPlayer.pause()
             mCurrentState = STATE_PAUSED
 
-            other()
+            mUiOperator?.pause()
         }
     }
 
-    override fun stop(other: () -> Unit) {
+    override fun stop() {
         LogUtil_d(this.javaClass.simpleName, "stop")
 
         mMediaPlayer.stop()
         mCurrentState = STATE_STOP
 
-        other()
+        mUiOperator?.stop()
     }
 
-    override fun release(other: () -> Unit) {
+    override fun release() {
         LogUtil_d(this.javaClass.simpleName, "release")
 
         mMediaPlayer.release()
         mCurrentState = STATE_IDLE
 
-        other()
+        mUiOperator?.release()
     }
 
-    override fun destroy(other: () -> Unit) {
+    override fun destroy() {
         LogUtil_d(this.javaClass.simpleName, "destroy")
 
         IjkMediaPlayer.native_profileEnd()
 
-        other()
+        mUiOperator?.destroy()
     }
 
     override fun getDuration(): Long {
@@ -155,7 +162,11 @@ internal class DefaultVideoPlayer : IVideoPlayer {
         return mCurrentState
     }
 
-    override fun setOnPreparedListener(listener: () -> Unit) {
+    override fun setUIOperatorListener(listener: IVideoPlayer.IUIOperatorListener?) {
+        mUiOperator = listener
+    }
+
+    override fun setOnPreparedListener(listener: (width: Int, height: Int) -> Unit) {
         LogUtil_d(this.javaClass.simpleName, "setOnPreparedListener")
 
         mMediaPlayer.setOnPreparedListener {
@@ -167,11 +178,7 @@ internal class DefaultVideoPlayer : IVideoPlayer {
             val videoHeight = it.videoHeight
             LogUtil_d(this.javaClass.simpleName, "mVideoWidth=$videoWidth mVideoHeight=$videoHeight")
 
-//            if (videoWidth > 0 && videoHeight > 0) {
-//                mRenderView.setVideoSize(videoWidth, videoHeight)
-//            }
-
-            listener()
+            listener(videoWidth, videoHeight)
         }
     }
 
@@ -248,6 +255,15 @@ internal class DefaultVideoPlayer : IVideoPlayer {
             LogUtil_d(this.javaClass.simpleName, "OnTimedTextListener")
 
             listener(TimedText(text.bounds, text.text))
+        }
+    }
+
+    override fun clearAllListener() {
+        LogUtil_d(this.javaClass.simpleName, "clearAllListener")
+
+        mUiOperator = null
+        if (mMediaPlayer is AbstractMediaPlayer) {
+            mMediaPlayer.resetListeners()
         }
     }
 }
