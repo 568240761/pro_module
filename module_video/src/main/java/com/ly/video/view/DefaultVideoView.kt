@@ -48,6 +48,9 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
     private val mDuration = 400L
 
+    /**-1,没执行动画;0,[mShowAnimation]即将执行或正在执行;1,[mHideAnimation]即将执行或正在执行*/
+    private var mAnimState = -1
+
     override fun getLayoutId(): Int {
         return R.layout.video_layout_default_video_view
     }
@@ -82,7 +85,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
         post {
             hideUiAnimator()
-            mHideAnimation.start()
+            playHideAnimation()
         }
     }
 
@@ -116,8 +119,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
                             } else {
                                 mValueAnimation.start()
                             }
-
-                        mHideAnimation.start()
+                        playHideAnimation()
                     }
                 }
             }
@@ -128,8 +130,10 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
             R.id.video_layout -> {
                 if (video_play.alpha == 0f) {
-                    mShowAnimation.start()
-                    mHideAnimation.start()
+                    playShowAnimation()
+                    postDelayed({
+                        playHideAnimation()
+                    }, mDuration + 100L)
                 }
             }
         }
@@ -184,7 +188,9 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
                     mIsCancel = false
                     val duration = mDuration * (1f - video_play.alpha)
                     mShowAnimation.duration = duration.toLong()
-                    mShowAnimation.start()
+                    playShowAnimation()
+                } else {
+                    mAnimState = -1
                 }
             }
 
@@ -200,6 +206,11 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         animatorSet.duration = mDuration
         animatorSet.startDelay = 2000L
         mHideAnimation = animatorSet
+    }
+
+    private fun playHideAnimation() {
+        mAnimState = 1
+        mHideAnimation.start()
     }
 
     private fun showUiAnimator() {
@@ -223,6 +234,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                mAnimState = -1
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -236,6 +248,11 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         animatorSet.interpolator = LinearInterpolator()
         animatorSet.duration = mDuration
         mShowAnimation = animatorSet
+    }
+
+    private fun playShowAnimation() {
+        mAnimState = 0
+        mShowAnimation.start()
     }
 
     /**
