@@ -17,12 +17,9 @@ import com.ly.pub.util.PermissionCallback
 import com.ly.pub.util.checkPermission
 import com.ly.pub.util.jumpNewPage
 import com.ly.pub.util.showToast
-import com.ly.video.hover.HoverManager
 import com.ly.video.millisecondToHMS
-import com.ly.video.player.VideoPlayerManager
 import com.ly.widget.recycler.adapter.CommonAdapter
 import com.ly.widget.recycler.base.ViewHolder
-import com.ly.widget.recycler.decoration.LineLinearLayoutDecoration
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : PubActivity(), VideoLoaderCallback {
@@ -30,14 +27,19 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
     private val mLoader = VideoLoader(this, this)
     private val mList = ArrayList<SourceEntity>()
     private val mAdapter: CommonAdapter<SourceEntity>
-        get() = object : CommonAdapter<SourceEntity>(this, R.layout.recycler_item_video, PUBLIC_IMAGE_LOADER, mList) {
+        get() = object : CommonAdapter<SourceEntity>(this, R.layout.recycler_item_video, mList) {
             override fun convert(holder: ViewHolder?, t: SourceEntity?, position: Int) {
-
-                holder!!.initImageData(R.id.video_image, t!!.thumbPath, R.drawable.shape_solid_22000000)
+                PUBLIC_IMAGE_LOADER.showImage(
+                    this@MainActivity,
+                    holder!!.getView(R.id.video_image),
+                    t!!.thumbPath,
+                    R.drawable.shape_solid_22000000,
+                    R.drawable.shape_solid_22000000
+                )
 
                 if (t.duration > 0) {
                     holder.setVisible(R.id.video_duration, true)
-                    holder.setText(R.id.video_duration, millisecondToHMS(t.duration))
+                    holder.setText(R.id.video_duration, t.duration.millisecondToHMS())
                 } else {
                     holder.setVisible(R.id.video_duration, false)
                 }
@@ -54,8 +56,6 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
                     val bundle = Bundle()
                     bundle.putParcelable(BUNDLE_VIDEO_ENTITY, t)
                     jumpNewPage(this@MainActivity, VideoActivity::class.java, bundle)
-
-                    HoverManager.destroyHoverPlayer()
                 }
             }
         }
@@ -65,7 +65,6 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
         setContentView(R.layout.activity_main)
 
         recycler.layoutManager = LinearLayoutManager(this)
-        recycler.addItemDecoration(LineLinearLayoutDecoration())
         recycler.addItemDecoration(SpaceLastItemLinearLayoutDecoration())
         recycler.adapter = mAdapter
 
@@ -103,7 +102,5 @@ class MainActivity : PubActivity(), VideoLoaderCallback {
 
     override fun clickBack() {
         super.clickBack()
-        VideoPlayerManager.destroyVideoPlayer()
-        HoverManager.destroyHoverPlayer()
     }
 }

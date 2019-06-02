@@ -48,9 +48,7 @@ interface IVideoPlayer {
      * @param error 视频播放出现错误时,会调用的函数类型参数
      */
     fun prepareAsync(
-        prepared: (width: Int, height: Int) -> Unit,
-        completion: () -> Unit = {},
-        error: (msg: String) -> Unit = {}
+            prepared: (width: Int, height: Int) -> Unit
     )
 
     /**视频宽度*/
@@ -60,32 +58,42 @@ interface IVideoPlayer {
     fun getHeight(): Int
 
     /**
+     * 重置
+     *
+     * @param callback 函数类型对象
+     */
+    fun reset(callback: () -> Unit = {})
+
+    /**
      * 播放
      *
+     * @param callback 函数类型对象
      */
-    fun start()
+    fun start(callback: () -> Unit = {})
 
     /**
      * 暂停
      *
+     * @param callback 函数类型对象
      */
-    fun pause()
+    fun pause(callback: () -> Unit = {})
 
     /**
      * 停止
      *
+     * @param callback 函数类型对象
      */
-    fun stop()
+    fun stop(callback: () -> Unit = {})
 
     /**
      * 释放资源
      *
+     * @param callback 函数类型对象
      */
-    fun release()
+    fun release(callback: () -> Unit = {})
 
     /**
      * 销毁
-     *
      */
     fun destroy()
 
@@ -129,7 +137,15 @@ interface IVideoPlayer {
     @VideoStatus
     fun getPlayStatus(): Int
 
-    fun setUIOperatorListener(listener: IUIOperatorListener?)
+    /**
+     * 为单一[com.ly.video.view.AbstractVideoView]实例设置播放状态监听
+     */
+    fun setOnlyOperatorListener(listener: IUIOperatorListener?)
+
+    /**
+     * 为所有[com.ly.video.view.AbstractVideoView]实例设置播放状态监听
+     */
+    fun setAllOperatorListener(listener: IUIOperatorListener?)
 
     fun setOnPreparedListener(listener: (width: Int, height: Int) -> Unit)
 
@@ -150,7 +166,7 @@ interface IVideoPlayer {
     fun clearAllListener()
 
     /**
-     * 响应视频播放开始或停止,UI变化的回调接口
+     * 响应视频播放开始或停止等的回调接口
      */
     interface IUIOperatorListener {
         fun start()
@@ -159,8 +175,8 @@ interface IVideoPlayer {
 
         fun stop()
 
-        fun release()
+        fun reset()
 
-        fun destroy()
+        fun release()
     }
 }

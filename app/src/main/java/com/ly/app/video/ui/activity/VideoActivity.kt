@@ -27,21 +27,25 @@ class VideoActivity : PubActivity() {
     }
 
     private fun initView() {
-        player.setGoBackEvent(View.OnClickListener { clickBack() })
         val source = intent.getParcelableExtra<SourceEntity>(BUNDLE_VIDEO_ENTITY)
         if (source != null) {
-            player.initViewData(title = source.getVideoName())
-
             val uri = Uri.parse(source.path)
             LogUtil_d(this.javaClass.simpleName, "uri=$uri")
-            player.initData(uri, isDebug = BuildConfig.DEBUG)
+
+            player.init(
+                title = source.getVideoName(),
+                uri = Uri.parse(source.path),
+                click = View.OnClickListener { clickBack() },
+                isDebug =BuildConfig.DEBUG )
         } else {
             showToast(R.string.toast_video_error)
         }
+
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        LogUtil_d("video","onDestroy")
+        LogUtil_d("video", "onDestroy")
     }
 }

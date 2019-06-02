@@ -11,13 +11,10 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.ly.pub.util.LogUtil_d
-import com.ly.video.HoverCallback
 import com.ly.video.VideoManager
-import com.ly.video.checkHoverPermission
 import com.ly.video.player.IVideoPlayer
 import com.ly.video.render.IRenderView
 import com.ly.video.render.TextureRenderView
-import com.ly.video.suspension.showSusWindow
 
 /**
  * Created by LanYang on 2019/5/29
@@ -50,6 +47,8 @@ abstract class AbstractVideoView : FrameLayout, DefaultLifecycleObserver {
 
     protected abstract fun initView()
 
+    protected abstract fun prepared()
+
     /**画面渲染*/
     private lateinit var mRender: IRenderView
 
@@ -81,24 +80,19 @@ abstract class AbstractVideoView : FrameLayout, DefaultLifecycleObserver {
      * @param operation 响应视频播放开始或停止,UI的回调接口
      * @param isDebug 是否为开发状态;为true,显示播放log日志
      */
-    fun initData(
+    protected fun initData(
         uri: Uri,
         headers: Map<String, String>? = null,
-        operation: IVideoPlayer.IUIOperatorListener,
+        operation: IVideoPlayer.IUIOperatorListener?,
         isDebug: Boolean
     ) {
         VideoManager.videoPlayer.setDebug(isDebug)
-        VideoManager.videoPlayer.setUIOperatorListener(operation)
+        VideoManager.videoPlayer.setOnlyOperatorListener(operation)
         VideoManager.videoPlayer.setVideoURI(uri, headers)
         VideoManager.videoPlayer.prepareAsync(
             prepared = { width, height ->
                 mRender.setRenderViewSize(width, height)
-            },
-            completion = {
-
-            },
-            error = { msg ->
-
+                prepared()
             }
         )
     }
@@ -106,27 +100,30 @@ abstract class AbstractVideoView : FrameLayout, DefaultLifecycleObserver {
     override fun onDestroy(owner: LifecycleOwner) {
         LogUtil_d(this.javaClass.simpleName, "onDestroy")
 
-        if (VideoManager.isShowSusWindow()) {
-            context.checkHoverPermission(object : HoverCallback {
-                override fun success() {
-                    VideoManager.videoPlayer.clearAllListener()
-                    showSusWindow()
-                }
-
-                override fun fail() {
-                    release()
-                }
-            })
-        } else {
-            release()
-        }
+//        if (VideoManager.isShowSusWindow()) {
+//            context.checkHoverPermission(object : HoverCallback {
+//                override fun success() {
+//                    VideoManager.videoPlayer.clearAllListener()
+//                    showSusWindow()
+//                }
+//
+//                override fun fail() {
+//                    release()
+//                }
+//            })
+//        } else {
+//            release()
+//        }
+        release()
     }
 
     private fun release() {
-        VideoManager.videoPlayer.clearAllListener()
-        VideoManager.videoPlayer.pause()
-        VideoManager.videoPlayer.stop()
-        VideoManager.videoPlayer.release()
+        post {
+            VideoManager.videoPlayer.clearAllListener()
+            VideoManager.videoPlayer.pause()
+            VideoManager.videoPlayer.stop()
+            VideoManager.videoPlayer.release()
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 package com.ly.video
 
 import android.content.Context
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.video.annotation.CAPTURE_CONFIG_MID
 import com.ly.video.annotation.CaptureConfig
@@ -19,7 +18,6 @@ import com.ly.video.suspension.DefaultSusWindow
 object VideoManager {
 
     val videoPlayer: IVideoPlayer by lazy {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(VideoProcessObserver())
         DefaultVideoPlayer()
     }
 
