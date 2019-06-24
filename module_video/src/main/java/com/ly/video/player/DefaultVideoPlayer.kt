@@ -52,13 +52,26 @@ internal class DefaultVideoPlayer : IVideoPlayer {
             }
 
             if (mMediaPlayer is IjkMediaPlayer) {
-                /*1-硬解码,0-软件解码*/
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1)
-//            mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
+                //1-硬解码,0-软件解码
+                (mMediaPlayer as IjkMediaPlayer).setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
+                //自动旋转视频角度
+                (mMediaPlayer as IjkMediaPlayer).setOption(
+                    IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+                    "mediacodec-auto-rotate",
+                    1
+                )
+                (mMediaPlayer as IjkMediaPlayer).setOption(
+                    IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+                    "mediacodec-handle-resolution-change",
+                    1
+                )
 
                 //调用seekTo时,使用关键帧
-                (mMediaPlayer as IjkMediaPlayer).setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
+                (mMediaPlayer as IjkMediaPlayer).setOption(
+                    IjkMediaPlayer.OPT_CATEGORY_PLAYER,
+                    "enable-accurate-seek",
+                    1
+                )
 
                 //1-视频缓冲完成后,就开始播放；0-视频缓冲完成后,先暂停
                 (mMediaPlayer as IjkMediaPlayer).setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1)
@@ -89,7 +102,7 @@ internal class DefaultVideoPlayer : IVideoPlayer {
     }
 
     override fun prepareAsync(
-            prepared: (width: Int, height: Int) -> Unit
+        prepared: (width: Int, height: Int) -> Unit
     ) {
         mMediaPlayer.prepareAsync()
         mCurrentState = STATE_PREPARING
@@ -291,7 +304,7 @@ internal class DefaultVideoPlayer : IVideoPlayer {
 
         initPlayer()
         mMediaPlayer.setOnInfoListener { _: IMediaPlayer, what: Int, extra: Int ->
-            LogUtil_d(this.javaClass.simpleName, "OnInfoListener")
+            LogUtil_d(this.javaClass.simpleName, "OnInfoListener[what=$what extra=$extra]")
 
             listener(what, extra)
             false

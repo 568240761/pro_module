@@ -1,11 +1,9 @@
 package com.ly.video
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.ly.pub.PUBLIC_APPLICATION
-import com.ly.video.annotation.CAPTURE_CONFIG_MID
-import com.ly.video.annotation.CaptureConfig
-import com.ly.video.annotation.GIF_FPS_10
-import com.ly.video.annotation.GifFps
+import com.ly.video.annotation.*
 import com.ly.video.player.DefaultVideoPlayer
 import com.ly.video.player.IVideoPlayer
 import com.ly.video.suspension.DefaultSusWindow
@@ -86,7 +84,6 @@ object VideoManager {
 
     fun isDebug() = mIsDebug
 
-
     fun setTrackLifecycle(flag: Boolean): VideoManager {
         mIsTrackLifecycle = flag
         mSharedPre.putSharedPreBoolean(VIDEO_PARAMS_IS_TRACK_LIFECYCLE, flag)
@@ -120,7 +117,6 @@ object VideoManager {
     }
 
     fun getSusWindowX() = mSusWindowX
-
 
     fun setSusWindowY(y: Int): VideoManager {
         mSusWindowY = y
@@ -169,9 +165,14 @@ object VideoManager {
         return this
     }
 
-    @CaptureConfig
-    fun getCapGifConfig() = mCapGifConfig
 
+    fun getCapGifConfig(): Bitmap.Config {
+        return when (mCapBitmapConfig) {
+            CAPTURE_CONFIG_LOW -> Bitmap.Config.ALPHA_8
+            CAPTURE_CONFIG_MID -> Bitmap.Config.RGB_565
+            else -> Bitmap.Config.ARGB_8888
+        }
+    }
 
     fun setGifTotalTime(time: Long): VideoManager {
         mGifTotalTime = time
@@ -180,7 +181,6 @@ object VideoManager {
     }
 
     fun getGifTotalTime() = mGifTotalTime
-
 
     fun setGifFps(@GifFps fps: Int): VideoManager {
         mGifFps = fps

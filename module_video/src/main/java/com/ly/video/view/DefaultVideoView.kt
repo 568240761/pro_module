@@ -7,11 +7,16 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.SeekBar
 import androidx.annotation.RequiresApi
+import com.ly.pub.PUBLIC_APPLICATION
 import com.ly.pub.util.LogUtil_d
+import com.ly.pub.util.saveBitmap
+import com.ly.pub.util.showToast
 import com.ly.video.R
 import com.ly.video.VideoManager
 import com.ly.video.millisecondToHMS
@@ -19,12 +24,13 @@ import com.ly.video.player.IVideoPlayer
 import kotlinx.android.synthetic.main.video_layout_default_video_view.view.*
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.*
 
 /**
  * Created by LanYang on 2019/3/15
  * 默认实现的视频播放控件
  */
-class DefaultVideoView : AbstractVideoView, View.OnClickListener {
+class DefaultVideoView : AbstractVideoView, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     constructor(context: Context) : super(context)
 
@@ -40,16 +46,24 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         defStyleRes
     )
 
-    private var mCurrentTime: Long = 0
-
-    private lateinit var mValueAnimation: ValueAnimator
+    private lateinit var mProgressAnimation: ValueAnimator
     private lateinit var mHideAnimation: AnimatorSet
     private lateinit var mShowAnimation: AnimatorSet
 
+    /**当前视频播放时间*/
+    private var mCurrentTime: Long = 0
+
+    /**隐藏与显示动画执行最长时间*/
     private val mDuration = 400L
 
-    /**-1,没执行动画;0,[mShowAnimation]即将执行或正在执行;1,[mHideAnimation]即将执行或正在执行*/
-    private var mAnimState = -1
+    /**视频控制UI显示时长*/
+    private val mShowDuration = 3000L
+
+    /**是否在拖动进度条*/
+    private var mTrackBar = false
+
+    /**是否重新播放*/
+    private var mReplay = false
 
     override fun getLayoutId(): Int {
         return R.layout.video_layout_default_video_view
@@ -57,7 +71,9 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
     override fun initView() {
         video_play.setOnClickListener(this)
-        video_more.setOnClickListener(this)
+        video_seekbar.setOnSeekBarChangeListener(this)
+        video_screenshots.setOnClickListener(this)
+        video_gif.setOnClickListener(this)
         video_layout.setOnClickListener(this)
 
         VideoManager.videoPlayer.setOnErrorListener {
@@ -68,6 +84,15 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
         VideoManager.videoPlayer.setOnCompletionListener {
             video_play.setImageResource(R.drawable.video_layer_restart)
+            mReplay = true
+            if (video_play.alpha == 0f) {
+                showUiAnimator()
+                playShowAnimation()
+            } else {
+                if (mHideAnimation.isStarted) {
+                    mHideAnimation.cancel()
+                }
+            }
         }
     }
 
@@ -77,11 +102,10 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         video_seekbar.progress = initProgressAnimator()
 
         video_prepare.visibility = View.GONE
-        video_more.visibility = View.VISIBLE
         video_play.visibility = View.VISIBLE
         video_layout_bottom.visibility = View.VISIBLE
 
-        mValueAnimation.start()
+        mProgressAnimation.start()
 
         post {
             hideUiAnimator()
@@ -100,40 +124,71 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
                             mHideAnimation.cancel()
                         }
 
-                        if (this::mValueAnimation.isInitialized)
+                        if (this::mProgressAnimation.isInitialized)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                mValueAnimation.pause()
+                                mProgressAnimation.pause()
                             } else {
-                                mValueAnimation.end()
                                 mCurrentTime = VideoManager.videoPlayer.getCurrentPosition()
+                                mProgressAnimation.end()
                                 initProgressAnimator()
                             }
                     }
                 } else if (VideoManager.videoPlayer.isPreparedState()) {
                     VideoManager.videoPlayer.start {
                         video_play.setImageResource(R.drawable.video_layer_pause)
-
-                        if (this::mValueAnimation.isInitialized)
+                        if (mReplay) {
+                            mReplay = false
+                            mCurrentTime = VideoManager.videoPlayer.getCurrentPosition()
+                            mProgressAnimation.end()
+                            initProgressAnimator()
+                            mProgressAnimation.start()
+                        } else if (this::mProgressAnimation.isInitialized)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                mValueAnimation.resume()
+                                mProgressAnimation.resume()
                             } else {
-                                mValueAnimation.start()
+                                mProgressAnimation.start()
                             }
+
                         playHideAnimation()
                     }
                 }
             }
 
-            R.id.video_more -> {
+            R.id.video_screenshots -> {
+                render.captureBitmap {
+                    val path =
+                        Environment.getExternalStorageDirectory().path + "/DCIM/${PUBLIC_APPLICATION.packageName}"
+                    val name = "${Date().time}.png"
+                    saveBitmap(it, path, name)
+                    post {
+                        showToast("保存文件在/DCIM/${PUBLIC_APPLICATION.packageName}下！")
+                    }
+                }
+            }
 
+            R.id.video_gif -> {
+                val path =
+                    Environment.getExternalStorageDirectory().path + "/DCIM/${PUBLIC_APPLICATION.packageName}/"
+
+                val name = "$path${Date().time}.gif"
+                render.captureGif(
+                    path = name,
+                    handleCallback = {
+                        showToast("正在生成GIF！")
+                    },
+                    failureCallback = {
+                        showToast("生成GIF失败！")
+                    },
+                    successCallback = {
+                        showToast("生成GIF成功！")
+                    }
+                )
             }
 
             R.id.video_layout -> {
                 if (video_play.alpha == 0f) {
                     playShowAnimation()
-                    postDelayed({
-                        playHideAnimation()
-                    }, mDuration + 100L)
+                    playHideAnimation()
                 }
             }
         }
@@ -144,19 +199,34 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
 
         LogUtil_d(this.javaClass.simpleName, "cur=$mCurrentTime total=$total")
         val cur = BigDecimal(mCurrentTime)
-            .divide(BigDecimal(total))
-            .setScale(2, RoundingMode.HALF_UP)
+            .divide(BigDecimal(total), 2, RoundingMode.HALF_UP)
             .multiply(BigDecimal("100")).toInt()
         LogUtil_d(this.javaClass.simpleName, "curInt=$cur")
 
-        mValueAnimation = ValueAnimator.ofInt(cur, 100)
-        mValueAnimation.addUpdateListener {
-            val value = it.animatedValue as Int
-            video_seekbar.progress = value
-            video_current.text = VideoManager.videoPlayer.getCurrentPosition().millisecondToHMS()
+        mProgressAnimation = ValueAnimator.ofInt(cur, 100)
+        mProgressAnimation.addUpdateListener {
+            if (!mTrackBar) {
+                val value = it.animatedValue as Int
+                video_seekbar.progress = value
+                video_current.text = VideoManager.videoPlayer.getCurrentPosition().millisecondToHMS()
+            }
         }
-        mValueAnimation.interpolator = LinearInterpolator()
-        mValueAnimation.duration = total - mCurrentTime
+        mProgressAnimation.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                if (!mTrackBar) {
+                    video_seekbar.progress = 100
+                    video_current.text = VideoManager.videoPlayer.getDuration().millisecondToHMS()
+                }
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+        mProgressAnimation.interpolator = LinearInterpolator()
+        mProgressAnimation.duration = total - mCurrentTime
 
         return cur
     }
@@ -182,6 +252,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                LogUtil_d(this@DefaultVideoView.javaClass.simpleName, "隐藏动画结束")
                 video_play.visibility = View.GONE
                 showUiAnimator()
                 if (mIsCancel) {
@@ -189,27 +260,26 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
                     val duration = mDuration * (1f - video_play.alpha)
                     mShowAnimation.duration = duration.toLong()
                     playShowAnimation()
-                } else {
-                    mAnimState = -1
                 }
             }
 
             override fun onAnimationCancel(animation: Animator?) {
+                LogUtil_d(this@DefaultVideoView.javaClass.simpleName, "取消成功")
                 mIsCancel = true
             }
 
             override fun onAnimationStart(animation: Animator?) {
+                LogUtil_d(this@DefaultVideoView.javaClass.simpleName, "隐藏动画开始")
             }
         })
         animatorSet.play(topAnim).with(bottomAnim).with(playAnim)
         animatorSet.interpolator = LinearInterpolator()
         animatorSet.duration = mDuration
-        animatorSet.startDelay = 2000L
+        animatorSet.startDelay = mShowDuration
         mHideAnimation = animatorSet
     }
 
     private fun playHideAnimation() {
-        mAnimState = 1
         mHideAnimation.start()
     }
 
@@ -233,9 +303,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         animatorSet.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
-                mAnimState = -1
-            }
+            override fun onAnimationEnd(animation: Animator?) {}
 
             override fun onAnimationCancel(animation: Animator?) {
             }
@@ -251,8 +319,35 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
     }
 
     private fun playShowAnimation() {
-        mAnimState = 0
         mShowAnimation.start()
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        if (mTrackBar) {
+            LogUtil_d(this.javaClass.simpleName, "onProgressChanged[progress=$progress]")
+            mCurrentTime = BigDecimal(progress)
+                .divide(BigDecimal("100"), 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal(VideoManager.videoPlayer.getDuration())).toLong()
+            video_current.text = mCurrentTime.millisecondToHMS()
+            if (mReplay) video_play.setImageResource(R.drawable.video_layer_start)
+            LogUtil_d(this.javaClass.simpleName, "onProgressChanged[curDuration=$mCurrentTime]")
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        LogUtil_d(this.javaClass.simpleName, "onStartTrackingTouch")
+        mTrackBar = true
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        LogUtil_d(this.javaClass.simpleName, "onStopTrackingTouch")
+        VideoManager.videoPlayer.seekTo(mCurrentTime)
+        mTrackBar = false
+        if (VideoManager.videoPlayer.isPlaying()) {
+            mProgressAnimation.end()
+            initProgressAnimator()
+            mProgressAnimation.start()
+        }
     }
 
     /**
@@ -273,7 +368,7 @@ class DefaultVideoView : AbstractVideoView, View.OnClickListener {
         uri: Uri,
         headers: Map<String, String>? = null,
         operation: IVideoPlayer.IUIOperatorListener? = null,
-        click: View.OnClickListener? = null,
+        click: OnClickListener? = null,
         isDebug: Boolean
     ) {
         video_title.text = title

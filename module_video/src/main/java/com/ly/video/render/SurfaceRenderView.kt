@@ -57,7 +57,12 @@ class SurfaceRenderView : SurfaceView, SurfaceHolder.Callback, IRenderView {
         LogUtil_d(this.javaClass.simpleName, "do not support captureBitmap")
     }
 
-    override fun captureGif(path: String, failure: () -> Unit, success: (file: File) -> Unit) {
+    override fun captureGif(
+        path: String,
+        handleCallback: () -> Unit,
+        failureCallback: () -> Unit,
+        successCallback: (file: File) -> Unit
+    ) {
         LogUtil_d(this.javaClass.simpleName, "do not support captureGif")
     }
 

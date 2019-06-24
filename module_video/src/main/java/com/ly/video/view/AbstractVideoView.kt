@@ -50,17 +50,17 @@ abstract class AbstractVideoView : FrameLayout, DefaultLifecycleObserver {
     protected abstract fun prepared()
 
     /**画面渲染*/
-    private lateinit var mRender: IRenderView
+    protected lateinit var render: IRenderView
 
     private fun loadView() {
         val textureRenderView = TextureRenderView(context)
-        textureRenderView.layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
+        textureRenderView.layoutParams = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT,
             Gravity.CENTER
         )
         addView(textureRenderView)
-        mRender = textureRenderView
+        render = textureRenderView
 
         LayoutInflater.from(context).inflate(getLayoutId(), this, true)
 
@@ -91,7 +91,7 @@ abstract class AbstractVideoView : FrameLayout, DefaultLifecycleObserver {
         VideoManager.videoPlayer.setVideoURI(uri, headers)
         VideoManager.videoPlayer.prepareAsync(
             prepared = { width, height ->
-                mRender.setRenderViewSize(width, height)
+                render.setRenderViewSize(width, height)
                 prepared()
             }
         )

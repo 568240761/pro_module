@@ -10,11 +10,7 @@ import java.util.*
  * Created by LanYang on 2019/5/18
  * 关于执行周期性任务的类
  */
-class PubTimer(
-    private val time: Long,
-    private val timerTask: TimerTask,
-    val context: Context? = null
-) : DefaultLifecycleObserver {
+class PubTimer(val context: Context? = null) : DefaultLifecycleObserver {
     private val mTimer = Timer()
 
     init {
@@ -27,8 +23,10 @@ class PubTimer(
      * 开始执行周期性任务
      *
      * @param delay 延时毫秒
+     * @param time 间隔毫秒
+     * @param timerTask 任务
      */
-    fun start(delay: Long = 0L) {
+    fun start(delay: Long = 0L, time: Long, timerTask: TimerTask) {
         mTimer.schedule(timerTask, delay, time)
     }
 
@@ -40,7 +38,6 @@ class PubTimer(
      */
     fun stop() {
         mTimer.cancel()
-        timerTask.cancel()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
